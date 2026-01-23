@@ -1,4 +1,4 @@
-import { prisma } from "../db/prisma.js";
+import { prisma } from "../config/prisma.js";
 
 export const findAllStudies = async () => {
   return prisma.study.findMany();
