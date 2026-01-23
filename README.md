@@ -86,7 +86,7 @@ git pull origin develop
 
 ---
 
-## 📂 폴더 구조 (src/)
+## 📂 BE 폴더 구조 (src/)
 
 ```text
 src/
