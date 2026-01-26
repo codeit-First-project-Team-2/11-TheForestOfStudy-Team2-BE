@@ -8,11 +8,11 @@ datasource db {
 }
 
 model Study {
-    id           String @id @default(ulid())
-    nickname     String
-    title        String
-    introduction String
-    background   String
+    id                  String @id @default(ulid())
+    nickname            String
+    title               String
+    introduction        String
+    backgroundImagePath String
 
     // 해시된 비밀번호
     password String
