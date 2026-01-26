@@ -7,24 +7,12 @@ datasource db {
     provider = "postgresql"
 }
 
-// 배경 이미지 옵션
-enum BackgroundType {
-    green
-    yellow
-    blue
-    pink
-    alvaro
-    mikey
-    andrew
-    chris
-}
-
 model Study {
-    id           String         @id @default(ulid())
+    id           String @id @default(ulid())
     nickname     String
     title        String
     introduction String
-    background   BackgroundType
+    background   String
 
     // 해시된 비밀번호
     password String
