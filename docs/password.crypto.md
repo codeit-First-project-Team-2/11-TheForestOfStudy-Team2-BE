@@ -12,7 +12,7 @@ const hashedPassword = await hashPassword(password);
 import { comparePassword } from '../utils/password.crypto.js';
 const { password } = req.body;
 const isValid = await comparePassword(password, study.password);
-```p
+```
 
 ### 주의사항
 
