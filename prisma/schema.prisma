@@ -1,0 +1,30 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Study {
+    id        String   @id @default(ulid())
+    nickname  String
+    title     String
+    createdAt DateTime @default(now())
+}
+
+model Habit {
+    id        String   @id @default(ulid())
+    createdAt DateTime @default(now())
+}
+
+model HabitRecord {
+    id        String   @id @default(ulid())
+    createdAt DateTime @default(now())
+}
+
+model Emoji {
+    id   String @id @default(ulid())
+    type String
+}
