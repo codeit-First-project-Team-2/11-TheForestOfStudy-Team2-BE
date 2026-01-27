@@ -6,10 +6,10 @@
  */
 
 import express from 'express';
-import { prisma } from '../../config/prisma.js';
-import { validate } from '../../middlewares/validate.middleware.js';
-import { createStudySchema } from '../../schemas/study.schema.js';
-import { hashPassword } from '../../utils/password.utils.js';
+import { prisma } from '#config/prisma.js';
+import { validate } from '#middlewares/validate.middleware.js';
+import { createStudySchema } from '#schemas/study.schema.js';
+import { hashPassword } from '#utils/password.utils.js';
 
 const studyRouter = express.Router();
 
