@@ -20,7 +20,7 @@ app.get("/health", (req, res) => {
 });
 
 // 모든 라우트 등록
-app.use('/', router);
+app.use('/api', router);
 
 // 에러 핸들러
 app.use(errorHandler);
