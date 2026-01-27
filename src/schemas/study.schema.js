@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { STUDY_LIMITS, REGEX } from '../constants/validation.constant.js';
-import { STUDY_ERROR_MESSAGES } from '../constants/validation.constant.js';
+import { STUDY_ERROR_MESSAGES } from '../constants/error.constant.js';
 import { ALLOWED_BACKGROUND_PATHS } from '../constants/study.constant.js';
 
 export const createStudySchema = z.object({
@@ -9,8 +9,8 @@ export const createStudySchema = z.object({
     .trim()
     .min(1, STUDY_ERROR_MESSAGES.NICKNAME_INVALID)
     .max(
-      STUDY_LIMITS.NICKNAME.MAX_LENGTH, // 최대 길이
-      STUDY_ERROR_MESSAGES.NICKNAME_INVALID, // 에러 메세지
+      STUDY_LIMITS.NICKNAME.MAX_LENGTH,
+      STUDY_ERROR_MESSAGES.NICKNAME_INVALID,
     ),
   title: z
     .string({ required_error: STUDY_ERROR_MESSAGES.TITLE_INVALID })
@@ -26,7 +26,7 @@ export const createStudySchema = z.object({
     ),
   background: z
     .string({ required_error: STUDY_ERROR_MESSAGES.BACKGROUND_INVALID })
-    .min(1, STUDY_ERROR_MESSAGES.BACKGROUND_INVALID) // 빈 문자열 방지
+    .min(1, STUDY_ERROR_MESSAGES.BACKGROUND_INVALID)
     .refine((val) => ALLOWED_BACKGROUND_PATHS.includes(val), {
       message: STUDY_ERROR_MESSAGES.BACKGROUND_INVALID,
     }),

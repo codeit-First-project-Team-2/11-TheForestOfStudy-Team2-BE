@@ -1,4 +1,3 @@
-// CORS 미들웨어: 브라우저가 요청을 허용/차단할 때 참고하는 약속
 import {
   DEVELOPMENT_ORIGINS,
   PRODUCTION_ORIGINS,
