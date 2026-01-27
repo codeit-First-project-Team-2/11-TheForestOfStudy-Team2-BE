@@ -1,14 +1,14 @@
 import express from "express";
 import { config } from "./config/config.js";
 import { logger } from './middlewares/logger.js';
-import { corsMiddleware } from './middlewares/cors.middleware.js';
+import { cors } from './middlewares/cors.js';
 import router from "./routes/index.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
 app.use(logger);
-app.use(corsMiddleware);
+app.use(cors);
 app.use(express.json());
 
 // Health 체크
