@@ -19,6 +19,7 @@ export const STUDY_ERROR_MESSAGES = {
   INTRODUCTION_INVALID: `소개글은 ${STUDY_LIMITS.INTRODUCTION.MAX_LENGTH}자 이내여야 합니다.`,
 
   PASSWORD_REQUIRED: '비밀번호는 필수입니다.',
+  PASSWORD_NO_SPACE: '비밀번호는 공백을 포함할 수 없습니다.',
   PASSWORD_CONFIRM_MISMATCH: '입력하신 비밀번호가 서로 일치하지 않습니다.',
   PASSWORD_INVALID: `비밀번호는 ${STUDY_LIMITS.PASSWORD.MIN_LENGTH}~${STUDY_LIMITS.PASSWORD.MAX_LENGTH}자 사이여야 합니다.`,
 
