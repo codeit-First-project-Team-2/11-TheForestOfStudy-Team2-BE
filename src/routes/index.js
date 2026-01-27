@@ -1,13 +1,8 @@
-import express from "express";
+import express from 'express';
+import studyRouter from './studies/index.js';
 
 const router = express.Router();
 
-// 기본 테스트 라우트
-router.get("/", (req, res) => {
-  res.json({
-    message: "API Router Running",
-    timestamp: new Date().toISOString(),
-  });
-});
+router.use('/studies', createStudy);
 
 export default router;
