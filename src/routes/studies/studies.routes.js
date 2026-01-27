@@ -69,19 +69,11 @@ studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
         background,
         password: hashedPassword,
       },
-      select: {
-        id: true,
-        nickname: true,
-        title: true,
-        introduction: true,
-        background: true,
-        totalPoint: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
 
-    res.status(201).json(study);
+    const { password: _, ...rest } = study;
+
+    res.status(201).json(rest);
   } catch (error) {
     next(error);
   }
