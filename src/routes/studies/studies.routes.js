@@ -1,13 +1,8 @@
 /**
- * studies.routes.js
- *
  * 📌 파일 작성 규칙
  * - 각각 담당하신 API 파트에 담당 이름 작성하시고 내용 추가해주세요.
  * - validate 사용해 유효성 검사
  * - 공통 에러 처리는 error middleware로 위임
- *
- * 작성 양식:
- * ===== HTTP METHOD / EndPoint (담당: 이름) =====
  */
 
 import express from 'express';
@@ -18,26 +13,42 @@ import { hashPassword } from '../../utils/password.utils.js';
 
 const studyRouter = express.Router();
 
-/* ============================== */
-/*              GET               */
-/* ============================== */
+// 담당: 000
+studyRouter.get('/', async (req, res, next) => {
+  try {
+    // getStudies 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== GET /studies (담당: 000) =====
+// 담당: 000
+studyRouter.get('/:studyId', async (req, res, next) => {
+  try {
+    // getStudyDetail 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== GET /studies/{studyId} (담당: 000) =====
+// 담당: 000
+studyRouter.get('/:studyId/habits', async (req, res, next) => {
+  try {
+    // getStudyHabits 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== GET /studies/{studyId}/habits (담당: 000) =====
+// 담당: 000
+studyRouter.get('/:studyId/habits/today', async (req, res, next) => {
+  try {
+    // getTodayHabitStatus 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== GET /studies/{studyId}/habits/today (담당: 000) =====
+// 담당: 000
+studyRouter.get('/:studyId/emojis', async (req, res, next) => {
+  try {
+    // getStudyEmojis 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== GET /studies/{studyId}/emojis (담당: 000) =====
-
-
-/* ============================== */
-/*              POST              */
-/* ============================== */
-
-// ===== POST /studies (담당: 강에스더) =====
+// 담당: 강에스더
 studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
   try {
     const {
@@ -76,25 +87,44 @@ studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
   }
 });
 
-// ===== POST /studies/{studyId}/habits (담당: 000) =====
+// 담당: 000
+studyRouter.post('/:studyId/habits', async (req, res, next) => {
+  try {
+    // createHabit 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== POST /studies/{studyId}/emojis (담당: 000) =====
+// 담당: 000
+studyRouter.post('/:studyId/emojis', async (req, res, next) => {
+  try {
+    // registerEmoji 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== POST /studies/{studyId}/focus (담당: 000) =====
+// 담당: 000
+studyRouter.post('/:studyId/focus', async (req, res, next) => {
+  try {
+    // recordFocusTime 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-// ===== POST /studies/{studyId}/password/verify (담당: 000) =====
+// 담당: 000
+studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
+  try {
+    // verifyStudyPassword 핸들러 구현 (password.utils 사용)
+  } catch (error) { next(error); }
+});
 
+// 담당: 000
+studyRouter.patch('/:studyId', async (req, res, next) => {
+  try {
+    // updateStudy 핸들러 구현
+  } catch (error) { next(error); }
+});
 
-/* ============================== */
-/*             PATCH              */
-/* ============================== */
-
-// ===== PATCH /studies/{studyId} (담당: 000) =====
-
-/* ============================== */
-/*             DELETE             */
-/* ============================== */
-
-// ===== DELETE /studies/{studyId} (담당: 000) =====
-
-export default studyRouter;
+// 담당: 000
+studyRouter.delete('/:studyId', async (req, res, next) => {
+  try {
+    // deleteStudy 핸들러 구현
+  } catch (error) { next(error); }
+});
