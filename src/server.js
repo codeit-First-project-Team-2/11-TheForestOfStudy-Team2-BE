@@ -1,7 +1,7 @@
-import express from "express";
-import apiRouter from "./routes/index.js";
-import { errorHandler } from "./middlewares/error.middleware.js";
-import { config } from "./config/config.js";
+import express from 'express';
+import  router  from './routes/index.js';
+import { errorHandler } from './middlewares/error.middleware.js';
+import { config } from './config/config.js';
 
 const app = express();
 
@@ -9,12 +9,12 @@ const app = express();
 app.use(express.json());
 
 // 라우터 등록
-app.use("/api", apiRouter);
+app.use('/api', router);
 
 // Health 체크 라우트
-app.get("/health", (req, res) => {
+app.get('/health', (req, res) => {
   res.json({
-    message: "API Server Running",
+    message: 'API Server Running',
     timestamp: new Date().toISOString(),
   });
 });
@@ -25,7 +25,7 @@ app.use(errorHandler);
 // 서버 시작
 app.listen(config.PORT, () => {
   console.log(
-    `[${config.NODE_ENV}] Server running at http://localhost:${config.PORT}`
+    `[${config.NODE_ENV}] Server running at http://localhost:${config.PORT}`,
   );
 });
 
