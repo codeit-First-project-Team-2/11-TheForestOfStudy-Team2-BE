@@ -1,3 +1,5 @@
+//나중에 API코드 수정할때 삭제해야 될 파일입니다..! 
+
 import * as todayFocusService from '../services/todayFocus.service.js';
 
 export const authorizePassword = async (req, res, next) => {
