@@ -10,6 +10,7 @@ import { prisma } from '#config/prisma.js';
 import { validate } from '#middlewares/validate.middleware.js';
 import { createStudySchema } from '#schemas/study.schema.js';
 import { hashPassword } from '#utils/password.utils.js';
+import { HTTP_STATUS } from '#constants/httpStatus.js';
 
 const studyRouter = express.Router();
 
@@ -17,47 +18,51 @@ const studyRouter = express.Router();
 studyRouter.get('/', async (req, res, next) => {
   try {
     // getStudies 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.get('/:studyId', async (req, res, next) => {
   try {
     // getStudyDetail 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.get('/:studyId/habits', async (req, res, next) => {
   try {
     // getStudyHabits 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.get('/:studyId/habits/today', async (req, res, next) => {
   try {
     // getTodayHabitStatus 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.get('/:studyId/emojis', async (req, res, next) => {
   try {
     // getStudyEmojis 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 강에스더
 studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
   try {
-    const {
-      nickname,
-      title,
-      introduction,
-      background,
-      password,
-    } = req.body;
+    const { nickname, title, introduction, background, password } = req.body;
 
     const hashedPassword = await hashPassword(password);
 
@@ -73,7 +78,7 @@ studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
 
     const { password: _, ...rest } = study;
 
-    res.status(201).json(rest);
+    res.status(HTTP_STATUS.CREATE).json(rest);
   } catch (error) {
     next(error);
   }
@@ -83,40 +88,52 @@ studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
 studyRouter.post('/:studyId/habits', async (req, res, next) => {
   try {
     // createHabit 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.post('/:studyId/emojis', async (req, res, next) => {
   try {
     // registerEmoji 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.post('/:studyId/focus', async (req, res, next) => {
   try {
     // recordFocusTime 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
   try {
     // verifyStudyPassword 핸들러 구현 (password.utils 사용)
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.patch('/:studyId', async (req, res, next) => {
   try {
     // updateStudy 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // 담당: 000
 studyRouter.delete('/:studyId', async (req, res, next) => {
   try {
     // deleteStudy 핸들러 구현
-  } catch (error) { next(error); }
+  } catch (error) {
+    next(error);
+  }
 });
