@@ -1,3 +1,10 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
 }
 
 model Study {
@@ -6,11 +13,14 @@ model Study {
     title               String
     introduction        String
     background          String
+
     // 해시된 비밀번호
     password String
+
     totalPoint Int      @default(0)
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
+
     habits Habit[]
     emojis Emoji[]
 }
@@ -18,19 +28,25 @@ model Study {
 model Habit {
     id   String @id @default(ulid())
     name String
+
     studyId String
     study   Study  @relation(fields: [studyId], references: [id], onDelete: Cascade)
+
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
+
     records HabitRecord[]
 }
 
 model HabitRecord {
     id String @id @default(ulid())
+
     habitId String
     habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
     // isDone Boolean @default(true)
+
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     deletedAt DateTime?
@@ -39,6 +55,7 @@ model HabitRecord {
 model Emoji {
     id   String @id @default(ulid())
     type String
+
     studyId String
     study   Study  @relation(fields: [studyId], references: [id], onDelete: Cascade)
 }
