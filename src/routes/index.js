@@ -11,6 +11,6 @@ router.get('/', (req, res) => {
   });
 });
 
-router.use('/api', todayFocusRouter); //오늘의 집중 테스트 
+router.use('/studies', todayFocusRouter); //오늘의 집중 테스트 
 
 export default router
