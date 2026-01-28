@@ -11,6 +11,8 @@ import { validate } from '#middlewares/validate.middleware.js';
 import { createStudySchema } from '#schemas/study.schema.js';
 import { hashPassword } from '#utils/password.utils.js';
 import { HTTP_STATUS } from '#constants';
+import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
+import { NotFoundException } from '#exceptions';
 
 const studyRouter = express.Router();
 
@@ -23,14 +25,28 @@ studyRouter.get('/', async (req, res, next) => {
   }
 });
 
-// 담당: 000
-studyRouter.get('/:studyId', async (req, res, next) => {
-  try {
-    // getStudyDetail 핸들러 구현
-  } catch (error) {
-    next(error);
-  }
-});
+// 담당: 안예진
+studyRouter.get(
+  '/:studyId',
+  validate(createStudySchema),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const study = await prisma.study.findUnique({
+        where: { id: Number(id) },
+        ...(include && { include }),
+      });
+
+      if (!study) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
+
+      res.json(study);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 // 담당: 000
 studyRouter.get('/:studyId/habits', async (req, res, next) => {
@@ -124,22 +140,43 @@ studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
   }
 });
 
-// 담당: 000
-studyRouter.patch('/:studyId', async (req, res, next) => {
-  try {
-    // updateStudy 핸들러 구현
-  } catch (error) {
-    next(error);
-  }
-});
+// 담당: 안예진
+studyRouter.patch(
+  '/:studyId',
+  validate(createStudySchema),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const { nickname, title, introduction, background } = req.body;
 
-// 담당: 000
-studyRouter.delete('/:studyId', async (req, res, next) => {
-  try {
-    // deleteStudy 핸들러 구현
-  } catch (error) {
-    next(error);
-  }
-});
+      const updatedStudy = await prisma.study.update({
+        where: { id: Number(id) },
+        nickname,
+        title,
+        introduction,
+        background,
+      });
 
+      res.status(200).json(updatedStudy);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+studyRouter.delete(
+  '/:studyId',
+  validate(createStudySchema),
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      await prisma.study.delete({
+        where: { id: Number(id) },
+      });
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 export default studyRouter;

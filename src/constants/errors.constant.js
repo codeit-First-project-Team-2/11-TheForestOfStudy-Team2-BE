@@ -37,6 +37,10 @@ export const STUDY_ERROR_MESSAGES = {
   PASSWORD_NO_SPACE: `비밀번호는 공백을 포함할 수 없습니다.`,
   PASSWORD_CONFIRM_MISMATCH: `입력하신 비밀번호가 서로 일치하지 않습니다.`,
   PASSWORD_INVALID: `비밀번호는 ${STUDY_LIMITS.PASSWORD.MIN_LENGTH}~${STUDY_LIMITS.PASSWORD.MAX_LENGTH}자 사이여야 합니다.`,
+
+  BACKGROUND_INVALID: `허용되지 않은 배경 이미지 경로입니다.`,
+
+  STUDY_NOT_FOUND: '스터디를 찾을 수 없습니다.',
 };
 
 export const HABIT_ERROR_MESSAGES = {
