@@ -41,7 +41,8 @@ export const STUDY_ERROR_MESSAGES = {
   BACKGROUND_INVALID: `허용되지 않은 배경 이미지 경로입니다.`,
 
   STUDY_NOT_FOUND: '스터디를 찾을 수 없습니다.',
-  STUDY_INVALID: '허용되지 않는 studyId 형식입니다.',
+  STUDY_INVALID: 'studyId는 26자 이내여야 합니다.',
+   STUDY_FORMAT_INVALID: '허용되지 않는 studyId 형식입니다.',
 };
 
 export const HABIT_ERROR_MESSAGES = {
