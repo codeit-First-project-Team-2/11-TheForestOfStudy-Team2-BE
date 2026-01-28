@@ -1,6 +1,7 @@
 # password.crypto.js 사용 가이드
 
 ## 패스워드 해시
+
 ```
 import { hashPassword } from '../utils/password.crypto.js';
 const { password } = req.body;
@@ -8,6 +9,7 @@ const hashedPassword = await hashPassword(password);
 ```
 
 ## 패스워드 검증
+
 ```
 import { comparePassword } from '../utils/password.crypto.js';
 const { password } = req.body;
