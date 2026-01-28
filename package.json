@@ -7,8 +7,13 @@
   "imports": {
     "#generated/*": "./generated/*",
     "#config": "./src/config/config.js",
+    "#config/*": "./src/config/*",
+    "#middlewares/*": "./src/middlewares/*",
+    "#schemas/*": "./src/schemas/*",
+    "#utils/*": "./src/utils/*",
+    "#constants/*": "./src/constants/*",
     "#db/*": "./src/db/*",
-    "#constants/*": "./src/constants/*"
+    "#exceptions": "./src/exceptions/index.js"
   },
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",

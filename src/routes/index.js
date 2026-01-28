@@ -1,16 +1,11 @@
 import express from 'express';
-import { todayFocusRouter } from './todayFocus.route.js';
+import studyRouter from './studies/index.js';
+import habitRouter from './habits/index.js';
 
 const router = express.Router();
 
-// 기본 테스트 라우트
-router.get('/', (req, res) => {
-  res.json({
-    message: 'API Router Running',
-    timestamp: new Date().toISOString(),
-  });
-});
-
-router.use('/studies', todayFocusRouter); //오늘의 집중 테스트 
+router.use('/studies', studyRouter);
+router.use('/habits', habitRouter);
+router.use('/studies', focusRouter);
 
 export default router
