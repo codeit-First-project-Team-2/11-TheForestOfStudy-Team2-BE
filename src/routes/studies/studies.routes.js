@@ -32,7 +32,7 @@ studyRouter.get('/', async (req, res, next) => {
 // 담당: 안예진
 studyRouter.get(
   '/:studyId',
-  validate(createStudySchema),
+  validate('params',studyIdParamSchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
@@ -44,7 +44,7 @@ studyRouter.get(
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      res.json(study); //상태추가필요
+      res.status(HTTP_STATUS.OK).json(study);
     } catch (error) {
       next(error);
     }
