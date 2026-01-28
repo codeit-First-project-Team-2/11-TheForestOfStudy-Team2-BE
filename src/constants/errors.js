@@ -53,9 +53,6 @@ export const EMOJI_ERROR_MESSAGES = {
 export const ERROR_MESSAGES = {
   
   // 인증 (Auth) 관련
-  NO_AUTH_TOKEN: '인증 토큰이 없습니다.',
-  INVALID_TOKEN: '유효하지 않거나 만료된 토큰입니다.',
-  USER_NOT_FOUND_FROM_TOKEN: '해당 토큰의 사용자 정보를 찾을 수 없습니다.',
   AUTH_FAILED: '인증에 실패하였습니다.',
   INVALID_CREDENTIALS: '비밀번호가 올바르지 않습니다.',
 

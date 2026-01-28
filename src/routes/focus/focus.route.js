@@ -1,32 +1,32 @@
-import bcrypt from 'bcrypt';
-import { prisma } from '../../config/prisma.js';
-import { HTTP_STATUS } from '#constants/http-status.js';
-import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
-import {
-  DEFAULT_SETTING_MINUTES,
-  DEFAULT_GETTING_POINTS,
-} from '#constants/timer.js';
+import express from 'express';
+import { prisma } from '#config/prisma.js';
+import { comparePassword } from '#utils/password.utils.js';
+import { HTTP_STATUS } from '#constants';
+import { STUDY_ERROR_MESSAGES } from '#constants';
+import { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from '#constants';
 import {
   NotFoundException,
-  UnathorizedException,
+  UnauthorizedException,
   BadRequestException,
-} from '../exceptions/index.js';
+} from '#exceptions';
 
-// ===== POST /studies/{studyId}/password/verify (담당: 김민성) =====
-focusRouter.POST('/:studyId/password/verify', async (req, res, next) => {
+const focusRouter = express.Router();
+
+// 담당: 김민성
+focusRouter.post('/:studyId/password/verify', async (req, res, next) => {
   const { studyId } = req.params;
   const { password: inputPassword } = req.body;
 
   try {
     const study = await prisma.study.findUnique({ where: { id: studyId } });
-    const isValidPassword = await bcrypt.compare(inputPassword, study.password);
+    const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
 
     if (!study) {
       throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
     }
 
     if (!isValidPassword) {
-      throw new UnathorizedException(
+      throw new UnauthorizedException(
         STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
       );
     }
@@ -44,8 +44,8 @@ focusRouter.POST('/:studyId/password/verify', async (req, res, next) => {
   }
 });
 
-// ===== POST /studies/{studyId}/focus (담당: 김민성) =====
-focusRouter.POST('/:studyId/focus', async (req, res, next) => {
+// 담당: 김민성
+focusRouter.post('/:studyId/focus', async (req, res, next) => {
   const { studyId } = req.params;
   const { actualMinutes } = req.body;
 
