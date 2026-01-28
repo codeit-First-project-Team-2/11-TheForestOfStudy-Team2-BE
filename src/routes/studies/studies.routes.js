@@ -8,7 +8,11 @@
 import express from 'express';
 import { prisma } from '#config/prisma.js';
 import { validate } from '#middlewares/validate.middleware.js';
-import { createStudySchema } from '#schemas/study.schema.js';
+import {
+  createStudySchema,
+  studyIdParamSchema,
+  updateStudySchema,
+} from '#schemas/study.schema.js';
 import { hashPassword } from '#utils/password.utils.js';
 
 import { HTTP_STATUS } from '#constants';
@@ -32,7 +36,7 @@ studyRouter.get('/', async (req, res, next) => {
 // 담당: 안예진
 studyRouter.get(
   '/:studyId',
-  validate('params',studyIdParamSchema),
+  validate('params', studyIdParamSchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
@@ -161,7 +165,8 @@ studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
 // 담당: 안예진
 studyRouter.patch(
   '/:studyId',
-  validate(createStudySchema),
+  validate('params', studyIdParamSchema),
+  validate('body', updateStudySchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
@@ -190,12 +195,12 @@ studyRouter.patch(
 // 담당: 안예진
 studyRouter.delete(
   '/:studyId',
-  validate(createStudySchema),
+  validate('params', studyIdParamSchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
       const existStudy = await prisma.study.findUnique({
-        where: { id: id },
+        where: { id: studyId },
       });
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
