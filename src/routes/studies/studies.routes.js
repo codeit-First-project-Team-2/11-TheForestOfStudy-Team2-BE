@@ -39,9 +39,9 @@ studyRouter.get(
   validate('params', studyIdParamSchema),
   async (req, res, next) => {
     try {
-      const { studyId } = req.params;
+      const { id } = req.params;
       const study = await prisma.study.findUnique({
-        where: { id: studyId },
+        where: { id },
       });
 
       if (!study) {
@@ -139,13 +139,11 @@ studyRouter.post('/:studyId/focus', async (req, res, next) => {
 });
 
 // 담당: 안예진
-studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
+studyRouter.post('/:studyId/password/verify', async (req, res, next) => {//검증핸들러,스키마작성필요
   try {
-    const { studyId } = req.params;
-    //스터디아이디를 통해서 스터디가 있는지 확인
-    //백에있는 스터디 비번이랑 지금 비번이랑 같은지 확인
+    const { id } = req.params;
     const { password } = req.body;
-    const study = await prisma.study.findUnique({ where: studyId });
+    const study = await prisma.study.findUnique({ where: id });
     if (!study) {
       throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
     }
@@ -155,7 +153,7 @@ studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
         STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
       );
     }
-    //비밀번호확인
+
     res.status(HTTP_STATUS.OK).json({ message: '인증 성공' });
   } catch (error) {
     next(error);
@@ -169,16 +167,16 @@ studyRouter.patch(
   validate('body', updateStudySchema),
   async (req, res, next) => {
     try {
-      const { studyId } = req.params;
+      const { id } = req.params;
       const { nickname, title, introduction, background } = req.body;
       const existStudy = await prisma.study.findUnique({
-        where: { id: studyId },
+        where: { id },
       });
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
       const updatedStudy = await prisma.study.update({
-        where: { id: studyId },
+        where: { id },
         nickname,
         title,
         introduction,
@@ -198,15 +196,15 @@ studyRouter.delete(
   validate('params', studyIdParamSchema),
   async (req, res, next) => {
     try {
-      const { studyId } = req.params;
+      const { id } = req.params;
       const existStudy = await prisma.study.findUnique({
-        where: { id: studyId },
+        where: { id },
       });
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
       await prisma.study.delete({
-        where: { id: studyId },
+        where: { id },
       });
       res.status(HTTP_STATUS.NO_CONTENT).send();
     } catch (error) {
