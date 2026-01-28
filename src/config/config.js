@@ -29,3 +29,11 @@ export const config = parseEnvironment();
 export const isDevelopment = config.NODE_ENV === 'development';
 export const isProduction = config.NODE_ENV === 'production';
 export const isTest = config.NODE_ENV === 'test';
+
+export const DEVELOPMENT_ORIGINS = [
+  'http://localhost:3000', // 로컬 포트
+  'http://localhost:5173', // vite 기본 포트
+];
+export const PRODUCTION_ORIGINS = [
+  // 배포 주소 추가
+];
