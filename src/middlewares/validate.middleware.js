@@ -1,18 +1,36 @@
-import { ValidationError } from '../errors/validation.error.js';
+import { isProduction } from '#config';
+import { flattenError } from 'zod';
+import { BadRequestException } from '#exceptions';
+import { ERROR_MESSAGE } from '#constants';
 
-export const validate = (schema) => (req, res, next) => {
-  try {
-    req.body = schema.parse(req.body);
-    next();
-  } catch (error) {
-    if (error.name === 'ZodError') {
-      // Zod 에러 중 가장 첫 번째 항목의 메시지
-      const firstError = error.errors[0];
-
-      // ValidationError로 변환하여 next()로 던짐
-      // 던져진 에러는 error.middleware.js에서 한꺼번에 처리
-      return next(new ValidationError(firstError.message));
-    }
-    next(error);
+export const validate = (target, schema) => {
+  if (!['body', 'query', 'params'].includes(target)) {
+    throw new Error(
+      `[validate middleware] Invalid target: "${target}". Expected "body", "query", or "params".`,
+    );
   }
+
+  return (req, res, next) => {
+    try {
+      const result = schema.safeParse(req[target]);
+
+      if (!result.success) {
+        const { fieldErrors } = flattenError(result.error);
+
+        if (isProduction) {
+          throw new BadRequestException(ERROR_MESSAGE.INVALID_INPUT);
+        }
+
+        throw new BadRequestException(
+          ERROR_MESSAGE.VALIDATION_FAILED,
+          fieldErrors,
+        );
+      }
+
+      Object.assign(req[target], result.data);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
 };
