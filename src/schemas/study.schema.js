@@ -38,3 +38,8 @@ export const createStudySchema = z.object({
     .max(STUDY_LIMITS.PASSWORD.MAX_LENGTH)
     .regex(REGEX.NO_SPACE, STUDY_ERROR_MESSAGES.PASSWORD_NO_SPACE),
 });
+export const studyIdParamSchema = z.object({
+  studyId: z.string()
+    .length(26, { message: 'ID는 26자의 ULID 형식이어야 합니다.' })
+    .regex(/^[0-9A-HJKMNP-TV-Z]{26}$/i, { message:STUDY_ERROR_MESSAGES.STUDY_INVALID}),
+});
