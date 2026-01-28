@@ -10,9 +10,13 @@ import { prisma } from '#config/prisma.js';
 import { validate } from '#middlewares/validate.middleware.js';
 import { createStudySchema } from '#schemas/study.schema.js';
 import { hashPassword } from '#utils/password.utils.js';
+
 import { HTTP_STATUS } from '#constants';
+import { comparePassword, hashPassword } from '#utils/password.utils.js';
+
 import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
-import { NotFoundException } from '#exceptions';
+import { NotFoundException, UnauthorizedException } from '#exceptions';
+import { compare } from 'bcrypt';
 
 const studyRouter = express.Router();
 
@@ -31,17 +35,16 @@ studyRouter.get(
   validate(createStudySchema),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { studyId } = req.params;
       const study = await prisma.study.findUnique({
-        where: { id: Number(id) },
-        ...(include && { include }),
+        where: { id: studyId },
       });
 
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      res.json(study);
+      res.json(study); //상태추가필요
     } catch (error) {
       next(error);
     }
@@ -131,10 +134,25 @@ studyRouter.post('/:studyId/focus', async (req, res, next) => {
   }
 });
 
-// 담당: 000
+// 담당: 안예진
 studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
   try {
-    // verifyStudyPassword 핸들러 구현 (password.utils 사용)
+    const { studyId } = req.params;
+    //스터디아이디를 통해서 스터디가 있는지 확인
+    //백에있는 스터디 비번이랑 지금 비번이랑 같은지 확인
+    const { password } = req.body;
+    const study = await prisma.study.findUnique({ where: studyId });
+    if (!study) {
+      throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+    }
+    const isPasswordValid = await comparePassword(password, study.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(
+        STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
+      );
+    }
+    //비밀번호확인
+    res.status(HTTP_STATUS.OK).json({ message: '인증 성공' });
   } catch (error) {
     next(error);
   }
@@ -146,34 +164,46 @@ studyRouter.patch(
   validate(createStudySchema),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
+      const { studyId } = req.params;
       const { nickname, title, introduction, background } = req.body;
-
+      const existStudy = await prisma.study.findUnique({
+        where: { id: studyId },
+      });
+      if (!existStudy) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
       const updatedStudy = await prisma.study.update({
-        where: { id: Number(id) },
+        where: { id: studyId },
         nickname,
         title,
         introduction,
         background,
       });
 
-      res.status(200).json(updatedStudy);
+      res.status(HTTP_STATUS.OK).json(updatedStudy);
     } catch (error) {
       next(error);
     }
   },
 );
 
+// 담당: 안예진
 studyRouter.delete(
   '/:studyId',
   validate(createStudySchema),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      await prisma.study.delete({
-        where: { id: Number(id) },
+      const { studyId } = req.params;
+      const existStudy = await prisma.study.findUnique({
+        where: { id: id },
       });
-      res.status(204).send();
+      if (!existStudy) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
+      await prisma.study.delete({
+        where: { id: studyId },
+      });
+      res.status(HTTP_STATUS.NO_CONTENT).send();
     } catch (error) {
       next(error);
     }
