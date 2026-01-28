@@ -2,7 +2,7 @@ import {
   STUDY_LIMITS,
   HABIT_LIMITS,
   EMOJI_LIMITS,
-} from './validation.constant.js';
+} from '../schemas/validation.constant.js';
 
 // Prisma 에러 코드 상수
 export const PRISMA_ERROR = {

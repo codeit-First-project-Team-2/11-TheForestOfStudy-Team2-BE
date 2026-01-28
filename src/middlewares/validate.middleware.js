@@ -1,7 +1,7 @@
 import { isProduction } from '#config';
 import { flattenError } from 'zod';
 import { BadRequestException } from '#exceptions';
-import { ERROR_MESSAGE } from '#constants';
+import { ERROR_MESSAGE } from '#constants'; // TODO: 확인필요
 
 export const validate = (target, schema) => {
   if (!['body', 'query', 'params'].includes(target)) {
