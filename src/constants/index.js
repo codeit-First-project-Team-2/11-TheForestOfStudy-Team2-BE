@@ -1,4 +1,4 @@
-export { ALLOWED_BACKGROUND_PATHS } from './background.js';
+export { ALLOWED_BACKGROUND_PATHS } from './background.constant.js';
 
 export {
   PRISMA_ERROR,
@@ -6,10 +6,10 @@ export {
   HABIT_ERROR_MESSAGES,
   EMOJI_ERROR_MESSAGES,
   ERROR_MESSAGES,
-} from './errors.js';
+} from './errors.constant.js';
 
-export { HTTP_STATUS } from './http-status.js';
+export { HTTP_STATUS } from './http-status.constant.js';
 
-export { REGEX } from './regex.js';
+export { REGEX } from './regex.constant.js';
 
-export { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from './timer.js';
+export { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from './timer.constant.js';
