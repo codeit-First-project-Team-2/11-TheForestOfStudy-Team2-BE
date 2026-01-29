@@ -1,6 +1,6 @@
 import express from 'express';
-import { prisma } from '#config/prisma.js';
 import { comparePassword } from '#utils/password.utils.js';
+import { focusRepository } from '../../repositories/focus.repository.js';
 import { HTTP_STATUS } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from '#constants';
@@ -18,7 +18,7 @@ focusRouter.post('/password/verify', async (req, res, next) => {
   const { password: inputPassword } = req.body;
 
   try {
-    const study = await prisma.study.findUnique({ where: { id: studyId } });
+    const study = await focusRepository.findStudyId(studyId); //repository 사용
     const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
 
     if (!study) {
@@ -59,11 +59,10 @@ focusRouter.post('/focus', async (req, res, next) => {
     );
     const earnedPoint = DEFAULT_GETTING_POINTS + Math.max(0, extraPoint);
 
-    const updatedStudy = await prisma.study.update({
-      where: { id: studyId },
-      data: { totalpoint: { increment: earnedPoint } },
-      select: { totalPoint: true },
-    });
+    const updatedStudy = await focusRepository.updateStudyPoints(
+      studyId,
+      earnedPoint,
+    ); //repository 사용
 
     return res.status(HTTP_STATUS.OK).json({
       success: true,
