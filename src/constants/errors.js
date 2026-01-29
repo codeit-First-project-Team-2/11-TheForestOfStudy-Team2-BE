@@ -40,7 +40,7 @@ export const STUDY_ERROR_MESSAGES = {
 };
 
 export const HABIT_ERROR_MESSAGES = {
-  HABIT_NAME_INVALID: `습관 이름은 ${HABIT_LIMITS.HABIT_NAME.MAX_LENGTH}자 이내여야 합니다.`,
+  HABIT_NAME_INVALID: `습관 이름은 ${HABIT_LIMITS.NAME.MAX_LENGTH}자 이내여야 합니다.`,
 };
 
 export const EMOJI_ERROR_MESSAGES = {
