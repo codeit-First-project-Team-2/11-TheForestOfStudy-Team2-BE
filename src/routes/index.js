@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.use('/studies', studyRouter);
 router.use('/habits', habitRouter);
-router.use('/studies/:studyId', focusRouter);
+router.use('/studies/:studyId', focusRouter); 
 
 export default router
