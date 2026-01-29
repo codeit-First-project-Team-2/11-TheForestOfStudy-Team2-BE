@@ -10,7 +10,7 @@ import { prisma } from '#config/prisma.js';
 import { validate } from '#middlewares/validate.middleware.js';
 import { createStudySchema } from '#schemas/study.schema.js';
 import { hashPassword } from '#utils/password.utils.js';
-import { HTTP_STATUS } from '#constants/http-status.js';
+import { HTTP_STATUS } from '#constants';
 
 const studyRouter = express.Router();
 
@@ -60,29 +60,33 @@ studyRouter.get('/:studyId/emojis', async (req, res, next) => {
 });
 
 // 담당: 강에스더
-studyRouter.post('/', validate(createStudySchema), async (req, res, next) => {
-  try {
-    const { nickname, title, introduction, background, password } = req.body;
+studyRouter.post(
+  '/',
+  validate('body', createStudySchema),
+  async (req, res, next) => {
+    try {
+      const { nickname, title, introduction, background, password } = req.body;
 
-    const hashedPassword = await hashPassword(password);
+      const hashedPassword = await hashPassword(password);
 
-    const study = await prisma.study.create({
-      data: {
-        nickname,
-        title,
-        introduction,
-        background,
-        password: hashedPassword,
-      },
-    });
+      const study = await prisma.study.create({
+        data: {
+          nickname,
+          title,
+          introduction,
+          background,
+          password: hashedPassword,
+        },
+      });
 
-    const { password: _, ...rest } = study;
+      const { password: _, ...rest } = study;
 
-    res.status(HTTP_STATUS.CREATE).json(rest);
-  } catch (error) {
-    next(error);
-  }
-});
+      res.status(HTTP_STATUS.CREATE).json(rest);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 // 담당: 000
 studyRouter.post('/:studyId/habits', async (req, res, next) => {
@@ -137,3 +141,5 @@ studyRouter.delete('/:studyId', async (req, res, next) => {
     next(error);
   }
 });
+
+export default studyRouter;
