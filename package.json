@@ -11,7 +11,7 @@
     "#middlewares/*": "./src/middlewares/*",
     "#schemas/*": "./src/schemas/*",
     "#utils/*": "./src/utils/*",
-    "#constants/*": "./src/constants/*",
+    "#constants": "./src/constants/index.js",
     "#db/*": "./src/db/*",
     "#exceptions": "./src/exceptions/index.js"
   },

@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { STUDY_LIMITS, REGEX } from '../constants/validation.constant.js';
-import { STUDY_ERROR_MESSAGES } from '../constants/error.constant.js';
-import { ALLOWED_BACKGROUND_PATHS } from '../constants/background.constant.js';
+import { STUDY_LIMITS } from './validation.constant.js';
+import { REGEX } from '#constants/regex.js';
+import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
+import { ALLOWED_BACKGROUND_PATHS } from '#constants/background.js';
 
 export const createStudySchema = z.object({
   nickname: z

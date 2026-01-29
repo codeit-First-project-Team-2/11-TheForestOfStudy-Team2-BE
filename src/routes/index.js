@@ -5,6 +5,6 @@ import habitRouter from './habits/index.js';
 const router = express.Router();
 
 router.use('/studies', studyRouter);
-router.use('/habits', habitRouter);
+router.use('/habits', habitRouter); 
 
-export default router;
+export default router
