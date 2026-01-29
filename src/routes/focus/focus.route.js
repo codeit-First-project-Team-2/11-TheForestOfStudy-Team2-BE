@@ -36,6 +36,7 @@ focusRouter.post('/password/verify', async (req, res, next) => {
       message: '인증 성공',
       data: {
         nickname: study.nickname,
+        title: study.title,
         totalPoint: study.totalPoint,
       },
     });
