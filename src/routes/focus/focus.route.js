@@ -10,10 +10,10 @@ import {
   BadRequestException,
 } from '#exceptions';
 
-const focusRouter = express.Router();
+const focusRouter = express.Router({ mergeParams: true });
 
 // 담당: 김민성
-focusRouter.post('/:studyId/password/verify', async (req, res, next) => {
+focusRouter.post('/password/verify', async (req, res, next) => {
   const { studyId } = req.params;
   const { password: inputPassword } = req.body;
 
@@ -45,7 +45,7 @@ focusRouter.post('/:studyId/password/verify', async (req, res, next) => {
 });
 
 // 담당: 김민성
-focusRouter.post('/:studyId/focus', async (req, res, next) => {
+focusRouter.post('/focus', async (req, res, next) => {
   const { studyId } = req.params;
   const { actualMinutes } = req.body;
 
