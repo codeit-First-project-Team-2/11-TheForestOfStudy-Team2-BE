@@ -40,11 +40,8 @@ export const createStudySchema = z.object({
 });
 export const studyIdParamSchema = z.object({
   studyId: z
-    .string()
-    .length(STUDY_LIMITS.ID.LENGTH, {
-      message: STUDY_ERROR_MESSAGES.STUDY_INVALID,
-    })
-    .regex(REGEX.ULID, { message: STUDY_ERROR_MESSAGES.STUDY_FORMAT_INVALID }),
+    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
+    .transform((val) => val.toUpperCase()),
 });
 
 export const updateStudySchema = z

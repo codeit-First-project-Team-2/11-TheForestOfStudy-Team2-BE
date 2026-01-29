@@ -13,9 +13,6 @@ export const STUDY_LIMITS = {
     MIN_LENGTH: 4,
     MAX_LENGTH: 10,
   },
-  ID:{
-    LENGTH:26, //ulid고정길이
-  }
 };
 
 // Habit
