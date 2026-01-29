@@ -1,6 +1,13 @@
+import { PrismaClient } from '#generated/prisma/client.ts';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { fakerKO as faker } from '@faker-js/faker';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
-import { SUBJECTS, INTRO_TEMPLATES, EMOJI_TYPES } from './seed.constants.js';
+import {
+  SUBJECTS,
+  INTRO_TEMPLATES,
+  EMOJI_TYPES,
+  HABITS,
+} from './seed.constants.js';
 
 const NUM_STUDIES_TO_CREATE = 1;
 
@@ -28,7 +35,7 @@ const makeIntroduction = (subject) => {
   let result = '';
 
   for (const block of blocks) {
-    if (result.length >= (isLong ? 95 : 50)) break;  // ??
+    if (result.length >= (isLong ? 95 : 50)) break; // ??
 
     const sentence = block.replace(/과목/g, subject);
     result += (result ? ' ' : '') + sentence;
@@ -45,7 +52,7 @@ const makeStudy = () => {
     id: studyId,
     nickname: slice(faker.person.firstName(), 4),
     title,
-    introduction: makeIntroduction(title), // TODO: 적절한 문장 나오도록 수정
+    introduction: makeIntroduction(title),
     background: faker.helpers.arrayElement(ALLOWED_BACKGROUND_PATHS),
     password: faker.internet.password({
       length: faker.number.int({ min: 4, max: 10 }),
@@ -54,7 +61,7 @@ const makeStudy = () => {
     }),
     totalPoint: faker.number.int({ min: 0, max: 100 }),
     habits: [],
-    emojis: [], // TODO: 사용하는 이모지 라이브러리 맞게 생성
+    emojis: [],
   };
 
   return study;
@@ -62,14 +69,14 @@ const makeStudy = () => {
 
 // Habit
 const makeHabitsForStudy = (studyId) => {
-  const habitCount = faker.number.int(1);
+  const habitCount = faker.number.int({ min: 3, max: 10 });
 
   return xs(habitCount).map(() => {
     const habitId = faker.string.ulid();
 
     return {
       id: habitId,
-      name: slice(faker.lorem.words(1), 15),
+      name: faker.helpers.arrayElement(HABITS),
       studyId,
       records: makeHabitRecordsForHabit(habitId),
     };
@@ -90,7 +97,7 @@ const makeHabitRecordsForHabit = (habitId) => {
 
 // Emoji
 const makeEmojisForStudy = (studyId) => {
-  const emojiCount = faker.number.int({ min: 1, max: 5 });
+  const emojiCount = faker.number.int({ min: 1, max: 20 });
 
   return xs(emojiCount).map(() => ({
     id: faker.string.ulid(),
@@ -115,8 +122,9 @@ function main() {
   console.log('\n✅ 생성 완료');
   console.log(`📊 Study: ${studies.length}`);
   console.log(
-    `📊 Habit 총 개수: ${studies.reduce((sum, s) => sum + s.habits.length, 0)}`,
+    `📊 Habits: ${studies.reduce((sum, s) => sum + s.habits.length, 0)}`,
+  );
+  console.log(
+    `📊 Emojis: ${studies.reduce((sum, s) => sum + s.emojis.length, 0)}`,
   );
 }
-
-main();
