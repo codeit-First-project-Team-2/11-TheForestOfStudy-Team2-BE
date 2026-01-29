@@ -1,5 +1,5 @@
 import { HttpException } from './httpException.js';
-import { ERROR_MESSAGES } from '#constants/errors.js';
+import { ERROR_MESSAGES } from '#constants';
 
 export class UnauthorizedException extends HttpException {
   constructor(message = ERROR_MESSAGES.AUTH_FAILED, detailes = null) {
