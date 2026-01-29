@@ -6,5 +6,5 @@ export const ALLOWED_BACKGROUND_PATHS = [
   '/images/backgrounds/alvaro.png',
   '/images/backgrounds/mikey.png',
   '/images/backgrounds/andrew.png',
-  '/images/backgrounds/chris.png'
+  '/images/backgrounds/chris.png',
 ];

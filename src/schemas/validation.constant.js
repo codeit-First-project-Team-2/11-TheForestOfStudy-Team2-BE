@@ -20,12 +20,12 @@ export const HABIT_LIMITS = {
   NAME: {
     MIN_LENGTH: 1,
     MAX_LENGTH: 15,
-  }
-}
+  },
+};
 
 // Emoji
 export const EMOJI_LIMITS = {
-    TYPE: {
-        // TODO: 허용 emoji 타입 정의
-    }
-}
+  TYPE: {
+    // TODO: 허용 emoji 타입 정의
+  },
+};
