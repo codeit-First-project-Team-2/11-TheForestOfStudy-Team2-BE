@@ -22,7 +22,7 @@ import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 import { compare } from 'bcrypt';
 
-const studyRouter = express.Router();
+export const studyRouter = express.Router();
 
 // 담당: 000
 studyRouter.get('/', async (req, res, next) => {
