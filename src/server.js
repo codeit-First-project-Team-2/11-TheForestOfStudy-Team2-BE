@@ -1,9 +1,9 @@
 import express from 'express';
-import { config } from './config/config.js';
-import { logger } from './middlewares/logger.js';
-import { cors } from './middlewares/cors.js';
+import { config } from '#config';
+import { logger } from '#middlewares/logger.js';
+import { cors } from '#middlewares/cors.js';
 import router from './routes/index.js';
-import { errorHandler } from './middlewares/error.middleware.js';
+import { errorHandler } from '#middlewares/error.middleware.js';
 
 const app = express();
 
