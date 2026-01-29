@@ -1,7 +1,7 @@
 import express from 'express';
 import { config } from '#config';
-import { logger } from '#middlewares/logger.js';
-import { cors } from '#middlewares/cors.js';
+import { logger } from '#middlewares/logger.middleware.js';
+import { cors } from '#middlewares/cors.middleware.js';
 import router from './routes/index.js';
 import { errorHandler } from '#middlewares/error.middleware.js';
 
