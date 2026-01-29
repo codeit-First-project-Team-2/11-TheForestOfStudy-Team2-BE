@@ -1,2 +1,0 @@
-export const DEFAULT_SETTING_MINUTES=1500
-export const DEFAULT_GETTING_POINTS = 3

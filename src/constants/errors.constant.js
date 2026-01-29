@@ -9,7 +9,7 @@ import {
  */
 export const PRISMA_ERROR = {
   UNIQUE_CONSTRAINT: 'P2002', // Unique constraint 위반
-  RECORD_NOT_FOUND: 'P2025',   // 레코드를 찾을 수 없음
+  RECORD_NOT_FOUND: 'P2025', // 레코드를 찾을 수 없음
 };
 
 /**
@@ -51,7 +51,6 @@ export const EMOJI_ERROR_MESSAGES = {
  * 공용 에러 메시지 (Auth, Validation, Generic) //추가!
  */
 export const ERROR_MESSAGES = {
-  
   // 인증 (Auth) 관련
   AUTH_FAILED: '인증에 실패하였습니다.',
   INVALID_CREDENTIALS: '비밀번호가 올바르지 않습니다.',
