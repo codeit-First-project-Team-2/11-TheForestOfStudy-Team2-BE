@@ -73,3 +73,5 @@ focusRouter.post('/focus', async (req, res, next) => {
     next(error);
   }
 });
+
+export default focusRouter;
