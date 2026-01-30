@@ -1,3 +1,23 @@
+export const HABIT_RECORD_COUNT = {
+  MIN: 3,
+  MAX: 20,
+};
+
+export const HABIT_COUNT = {
+  MIN: 3,
+  MAX: 10,
+};
+
+export const EMOJI_COUNT = {
+  MIN: 1,
+  MAX: 20,
+}
+
+export const TOTAL_POINT_LIMIT = {
+  MIN: 1,
+  MAX: 100,
+}
+
 export const SUBJECTS = [
   'HTML',
   'CSS',

@@ -18,8 +18,8 @@ export const STUDY_LIMITS = {
 // Habit
 export const HABIT_LIMITS = {
   NAME: {
-    MIN_LENGTH: 1,
-    MAX_LENGTH: 15,
+    MIN_LENGTH: 3,
+    MAX_LENGTH: 10,
   }
 }
 

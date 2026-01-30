@@ -1,12 +1,17 @@
 import { fakerKO as faker } from '@faker-js/faker';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
 import {
+  HABIT_RECORD_COUNT,
+  HABIT_COUNT,
+  EMOJI_COUNT,
+  TOTAL_POINT_LIMIT,
   SUBJECTS,
   INTRO_TEMPLATES,
   EMOJI_TYPES,
   HABITS,
 } from './seed.constants.js';
 import { hashPassword } from '#utils/password.utils.js';
+import { STUDY_LIMITS } from '#schemas/validation.constant.js';
 
 export const xs = (n) => Array.from({ length: n }, (_, i) => i + 1);
 
@@ -41,7 +46,10 @@ export const makeIntroduction = (subject) => {
 
 export const makePassword = async () => {
   const raw = faker.internet.password({
-    length: faker.number.int({ min: 4, max: 10 }),
+    length: faker.number.int({
+      min: STUDY_LIMITS.PASSWORD.MIN_LENGTH,
+      max: STUDY_LIMITS.PASSWORD.MAX_LENGTH,
+    }),
     memorable: false,
     pattern: /[a-zA-Z0-9]/,
   });
@@ -55,12 +63,15 @@ export const makeStudy = async () => {
 
   const study = {
     id: studyId,
-    nickname: slice(faker.person.firstName(), 4),
+    nickname: slice(faker.person.firstName(), STUDY_LIMITS.NICKNAME),
     title,
     introduction: makeIntroduction(title),
     background: faker.helpers.arrayElement(ALLOWED_BACKGROUND_PATHS),
     password: await makePassword(),
-    totalPoint: faker.number.int({ min: 0, max: 100 }),
+    totalPoint: faker.number.int({
+      min: TOTAL_POINT_LIMIT.MIN,
+      max: TOTAL_POINT_LIMIT.MAX,
+    }),
     habits: [],
     emojis: [],
   };
@@ -70,7 +81,10 @@ export const makeStudy = async () => {
 
 // Habit
 export const makeHabitsForStudy = (studyId) => {
-  const habitCount = faker.number.int({ min: 3, max: 10 });
+  const habitCount = faker.number.int({
+    min: HABIT_COUNT.MIN,
+    max: HABIT_COUNT.MAX,
+  });
 
   return xs(habitCount).map(() => {
     const habitId = faker.string.ulid();
@@ -86,7 +100,10 @@ export const makeHabitsForStudy = (studyId) => {
 
 // HabitRecord
 export const makeHabitRecordsForHabit = (habitId) => {
-  const recordCount = faker.number.int({ min: 3, max: 20 });
+  const recordCount = faker.number.int({
+    min: HABIT_RECORD_COUNT.MIN,
+    max: HABIT_RECORD_COUNT.MAX,
+  });
 
   return (
     xs(recordCount)
@@ -103,7 +120,10 @@ export const makeHabitRecordsForHabit = (habitId) => {
 
 // Emoji
 export const makeEmojisForStudy = (studyId) => {
-  const emojiCount = faker.number.int({ min: 1, max: 20 });
+  const emojiCount = faker.number.int({
+    min: EMOJI_COUNT.MIN,
+    max: EMOJI_COUNT.MAX,
+  });
 
   return xs(emojiCount).map(() => ({
     id: faker.string.ulid(),
