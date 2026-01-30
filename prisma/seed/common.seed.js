@@ -1,133 +1,39 @@
+// .env 파일 DATABASE_URL 설정 필요
+// 테이블 동기화: npm run prisma:migrate
+// 시드 데이터 생성: npm run seed (기존 데이터는 삭제됩니다.)
+
 import { PrismaClient } from '#generated/prisma/client.ts';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { fakerKO as faker } from '@faker-js/faker';
-import { ALLOWED_BACKGROUND_PATHS } from '#constants';
 import {
-  SUBJECTS,
-  INTRO_TEMPLATES,
-  EMOJI_TYPES,
-  HABITS,
-} from './seed.constants.js';
+  makeStudy,
+  makeHabitsForStudy,
+  makeEmojisForStudy,
+  resetDb,
+} from './seed.factory.js';
 
-const NUM_STUDIES_TO_CREATE = 1;
-
-const xs = (n) => Array.from({ length: n }, (_, i) => i + 1);
-
-const slice = (str, max) => str.slice(0, max);
-
-const randomDateString = () =>
-  // TODO: 날짜 순서대로 나오도록 수정
-  faker.date
-    .between({
-      from: new Date(2026, 0, 1), // 2026-01-01
-      to: new Date(2026, 1, 6), // 2026-02-06
-    })
-    .toISOString()
-    .split('T')[0];
-
-const title = faker.helpers.arrayElement(SUBJECTS);
-
-const makeIntroduction = (subject) => {
-  // 40% 확률로 긴 introduction 생성
-  const isLong = faker.datatype.boolean({ probability: 0.3 });
-
-  const blocks = faker.helpers.shuffle(INTRO_TEMPLATES);
-  let result = '';
-
-  for (const block of blocks) {
-    if (result.length >= (isLong ? 95 : 50)) break; // ??
-
-    const sentence = block.replace(/과목/g, subject);
-    result += (result ? ' ' : '') + sentence;
-  }
-
-  return result;
-};
-
-// Study
-const makeStudy = () => {
-  const studyId = faker.string.ulid();
-
-  const study = {
-    id: studyId,
-    nickname: slice(faker.person.firstName(), 4),
-    title,
-    introduction: makeIntroduction(title),
-    background: faker.helpers.arrayElement(ALLOWED_BACKGROUND_PATHS),
-    password: faker.internet.password({
-      length: faker.number.int({ min: 4, max: 10 }),
-      memorable: false,
-      pattern: /[a-zA-Z0-9]/,
-    }),
-    totalPoint: faker.number.int({ min: 0, max: 100 }),
-    habits: [],
-    emojis: [],
-  };
-
-  return study;
-};
-
-// Habit
-const makeHabitsForStudy = (studyId) => {
-  const habitCount = faker.number.int({ min: 3, max: 10 });
-
-  return xs(habitCount).map(() => {
-    const habitId = faker.string.ulid();
-
-    return {
-      id: habitId,
-      name: faker.helpers.arrayElement(HABITS),
-      studyId,
-      records: makeHabitRecordsForHabit(habitId),
-    };
-  });
-};
-
-// HabitRecord
-const makeHabitRecordsForHabit = (habitId) => {
-  const recordCount = faker.number.int({ min: 3, max: 20 });
-
-  return xs(recordCount).map(() => ({
-    id: faker.string.ulid(),
-    habitId,
-    date: randomDateString(),
-    isCompleted: faker.datatype.boolean(),
-  }));
-};
-
-// Emoji
-const makeEmojisForStudy = (studyId) => {
-  const emojiCount = faker.number.int({ min: 1, max: 20 });
-
-  return xs(emojiCount).map(() => ({
-    id: faker.string.ulid(),
-    type: faker.helpers.arrayElement(EMOJI_TYPES),
-    studyId,
-  }));
-};
-
-// 트랜잭션으로 기존 데이터 삭제
-const resetDb = (prisma) =>
-  prisma.$transaction([
-    prisma.habit.deleteMany(),
-    prisma.emoji.deleteMany(),
-    prisma.study.deleteMany(), // 하위 테이블 삭제후 study 삭제
-  ]);
+const NUM_STUDIES_TO_CREATE = 34;
 
 async function main(prisma) {
   if (process.env.NODE_ENV !== 'development') {
     throw new Error('⚠️  프로덕션 환경에서는 시딩을 실행하지 않습니다');
   }
+
+  faker.seed(1);
+
   console.log('🌱 시딩 시작...');
   await resetDb(prisma);
   console.log('✅ 기존 데이터 삭제 완료');
 
-  const studies = xs(NUM_STUDIES_TO_CREATE).map(() => {
-    const study = makeStudy();
+  const studies = [];
+
+  for (let i = 0; i < NUM_STUDIES_TO_CREATE; i++) {
+    // for문 수정
+    const study = await makeStudy();
     study.habits = makeHabitsForStudy(study.id);
     study.emojis = makeEmojisForStudy(study.id);
-    return study;
-  });
+    studies.push(study);
+  }
 
   for (const study of studies) {
     await prisma.study.create({
@@ -161,6 +67,29 @@ async function main(prisma) {
       },
     });
   }
+  // // 2. 데이터 생성 로직 통합
+  // const studyPromises = xs(NUM_STUDIES_TO_CREATE).map(async () => {
+  //   const study = await makeStudy();
+  //   const habits = makeHabitsForStudy(study.id);
+  //   const emojis = makeEmojisForStudy(study.id);
+
+  //   return prisma.study.create({
+  //     data: {
+  //       ...study,
+  //       habits: {
+  //         create: habits.map(({ records, ...h }) => ({
+  //           ...h,
+  //           records: { create: records } // records는 nested create
+  //         })),
+  //       },
+  //       emojis: {
+  //         create: emojis.map(({ studyId, ...e }) => e), // studyId는 자동 매핑되므로 제외 가능
+  //       },
+  //     },
+  //   });
+  // });
+
+  // const results = await Promise.all(studyPromises);
 
   console.log('✅ 시딩 완료');
   console.log(`📊 Study: ${studies.length}`);
