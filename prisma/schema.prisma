@@ -45,7 +45,7 @@ model HabitRecord {
     habitId String
     habit   Habit  @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
-    date        DateTime
+    date        String
     isCompleted Boolean  @default(true)
 
     createdAt DateTime  @default(now())
