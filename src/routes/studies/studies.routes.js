@@ -21,6 +21,8 @@ import { comparePassword, hashPassword } from '#utils/password.utils.js';
 import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 
+import { studiesRepository } from './studyrepository.js';
+
 export const studyRouter = express.Router();
 
 // 담당: 000
@@ -40,9 +42,7 @@ studyRouter.get(
   async (req, res, next) => {
     try {
       const { studyId: id } = req.params;
-      const study = await prisma.study.findUnique({
-        where: { id },
-      });
+      const study = await studiesRepository.findById(id);
 
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
@@ -174,18 +174,17 @@ studyRouter.patch(
       const { studyId: id } = req.params;
       const { nickname, title, introduction, background } = req.body;
 
-      const existStudy = await prisma.study.findUnique({
-        where: { id },
-      });
+      const existStudy = await studiesRepository.findById(id);
 
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      const updatedStudy = await prisma.study.update({
-        where: { id },
-
-        data: { nickname, title, introduction, background },
+      const updatedStudy = await studiesRepository.update(id, {
+        nickname,
+        title,
+        introduction,
+        background,
       });
 
       res.status(HTTP_STATUS.OK).json(updatedStudy);
@@ -202,17 +201,13 @@ studyRouter.delete(
   async (req, res, next) => {
     try {
       const { studyId: id } = req.params;
-      const existStudy = await prisma.study.findUnique({
-        where: { id },
-      });
+      const existStudy = await studiesRepository.findById(id);
 
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      await prisma.study.delete({
-        where: { id },
-      });
+      await studiesRepository.delete(id);
       res.status(HTTP_STATUS.NO_CONTENT).send();
     } catch (error) {
       next(error);
