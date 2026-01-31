@@ -3,6 +3,7 @@ import { prisma } from '#config/prisma.js';
 // 전체 조회
 export const findAll = async () => {
   return await prisma.study.findMany();
+  //작성
 };
 
 // ID로 상세 조회
@@ -62,11 +63,13 @@ export const createEmoji = async (studyId, type) => {
   });
 };
 
-export default studiesrepository = {
+const studiesrepository = {
   findAll,
   findStudyById,
   create,
   updateStudy,
   deleteStudy,
   getEmojiStats,
+  createEmoji,
 };
+export default studiesrepository;
