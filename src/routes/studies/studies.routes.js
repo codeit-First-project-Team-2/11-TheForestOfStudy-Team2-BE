@@ -22,6 +22,7 @@ import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 
 import { studiesRepository } from './studiesrepository.js';
+import { emojiStats } from '../../repositories/studies.repository.js';
 
 export const studyRouter = express.Router();
 
@@ -34,27 +35,26 @@ studyRouter.get('/', async (req, res, next) => {
   }
 });
 
-// 담당: 안예진
-studyRouter.get(
-  //todo 1.include habitRecord
-  '/:studyId',
-  validate('params', studyIdParamSchema),
-  async (req, res, next) => {
-    try {
-      const { studyId: id } = req.params;
-      const study = await studiesRepository.findById(id);
+// // 담당: 안예진
+// studyRouter.get(
+//   '/:studyId',
+//   validate('params', studyIdParamSchema),
+//   async (req, res, next) => {
+//     try {
+//       const { studyId: id } = req.params;
+//       const study = await studiesRepository.findById(id);
 
-      if (!study) {
-        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
-      }
+//       if (!study) {
+//         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+//       }
 
-      const { password, ...studyDataWithoutPassword } = study;
-      res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
+//       const { password, ...studyDataWithoutPassword } = study;
+//       res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
+//     } catch (error) {
+//       next(error);
+//     }
+//   },
+// );
 
 // 담당: 000
 studyRouter.get('/:studyId/habits', async (req, res, next) => {
@@ -77,8 +77,10 @@ studyRouter.get('/:studyId/habits/today', async (req, res, next) => {
 // 담당: 안예진
 studyRouter.get('/:studyId/emojis', async (req, res, next) => {
   try {
-    const { studyId: id } = req.params;
-    const { emojis } = req.body;
+    const { studyId } = req.params;
+    const stats = await studiesRepository.getEmojiStats(studyId);
+
+    res.status(HTTP_STATUS.OK).json(stats);
   } catch (error) {
     next(error);
   }
@@ -125,7 +127,14 @@ studyRouter.post('/:studyId/habits', async (req, res, next) => {
 // 담당: 안예진
 studyRouter.post('/:studyId/emojis', async (req, res, next) => {
   try {
-    // registerEmoji 핸들러 구현
+    const { studyId } = req.params;
+    const { type } = req.body;
+
+    await studiesRepository.createEmoji(studyId, type);
+
+    const updateEmoji = await studiesRepository.getEmojiStats(studyId);
+
+    res.status(HTTP_STATUS.OK).json(updateEmoji);
   } catch (error) {
     next(error);
   }
@@ -141,12 +150,14 @@ studyRouter.post('/:studyId/focus', async (req, res, next) => {
 });
 
 // 담당: 안예진
+// 스터디 들어갈 때 비밀번호치고 바로 해당 스터디 값 보내주기  검증 + 특정 스터디 조회
 studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
   try {
     const { studyId: id } = req.params;
     const { password } = req.body;
 
-    const study = await prisma.study.findUnique({ where: { id } });
+    const study = await findStudyById(id);
+    const emojiStats = await studiesRepository.getEmojiStats(id);
 
     if (!study) {
       throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
@@ -159,7 +170,9 @@ studyRouter.post('/:studyId/password/verify', async (req, res, next) => {
       );
     }
 
-    res.status(HTTP_STATUS.OK).json({ message: '인증 성공' });
+    const { password: _, ...studyData } = study;
+
+    res.status(HTTP_STATUS.OK).json({ ...studyData, emojiStats });
   } catch (error) {
     next(error);
   }
@@ -175,13 +188,13 @@ studyRouter.patch(
       const { studyId: id } = req.params;
       const { nickname, title, introduction, background } = req.body;
 
-      const existStudy = await studiesRepository.findById(id);
+      const existStudy = await studiesRepository.findStudyById(id);
 
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      const updatedStudy = await studiesRepository.update(id, {
+      const updatedStudy = await studiesRepository.updateStudy(id, {
         nickname,
         title,
         introduction,
@@ -202,14 +215,14 @@ studyRouter.delete(
   async (req, res, next) => {
     try {
       const { studyId: id } = req.params;
-      const existStudy = await studiesRepository.findById(id);
+      const existStudy = await studiesRepository.findStudyById(id);
 
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
       await studiesRepository.delete(id);
-      res.status(HTTP_STATUS.NO_CONTENT).send();
+      res.status(HTTP_STATUS.NO_CONTENT);
     } catch (error) {
       next(error);
     }

@@ -6,7 +6,7 @@ export const findAll = async () => {
 };
 
 // ID로 상세 조회
-export const findById = async (id) => {
+export const findStudyById = async (id) => {
   return await prisma.study.findUnique({
     where: { id },
     include: {
@@ -15,7 +15,7 @@ export const findById = async (id) => {
           records: true,
         },
       },
-      emojis: true,
+      //   emojis: true,
     },
   });
 };
@@ -28,8 +28,8 @@ export const create = async (data) => {
 };
 
 // 수정
-export const update = async (id, data) => {
-  return  prisma.study.update({
+export const updateStudy = async (id, data) => {
+  return prisma.study.update({
     where: { id },
     data,
   });
@@ -41,11 +41,32 @@ export const deleteStudy = async (id) => {
     where: { id },
   });
 };
+//이모지 카운팅
+export const getEmojiStats = async (studyId) => {
+  return await prisma.emoji.groupBy({
+    by: ['type'],
+    where: { studyId },
+    _count: { type: true },
+    orderBy: {
+      _count: { type: 'desc' },
+    },
+  });
+};
+//이모지 생성
+export const createEmoji = async (studyId, type) => {
+  return await prisma.emoji.create({
+    data: {
+      studyId, //fk
+      type,
+    },
+  });
+};
 
 export default studiesrepository = {
   findAll,
-  findById,
+  findStudyById,
   create,
-  update,
+  updateStudy,
   deleteStudy,
+  getEmojiStats,
 };
