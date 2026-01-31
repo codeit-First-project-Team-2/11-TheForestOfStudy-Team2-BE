@@ -21,7 +21,7 @@ import { comparePassword, hashPassword } from '#utils/password.utils.js';
 import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 
-import { studiesRepository } from './studyrepository.js';
+import { studiesRepository } from './studiesrepository.js';
 
 export const studyRouter = express.Router();
 
@@ -48,7 +48,8 @@ studyRouter.get(
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      res.status(HTTP_STATUS.OK).json(study);
+      const { password, ...studyDataWithoutPassword } = study;
+      res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
     } catch (error) {
       next(error);
     }
