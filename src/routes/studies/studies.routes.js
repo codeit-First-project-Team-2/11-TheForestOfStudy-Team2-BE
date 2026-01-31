@@ -20,7 +20,6 @@ import { comparePassword, hashPassword } from '#utils/password.utils.js';
 
 import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
-import { compare } from 'bcrypt';
 
 export const studyRouter = express.Router();
 
@@ -35,6 +34,7 @@ studyRouter.get('/', async (req, res, next) => {
 
 // 담당: 안예진
 studyRouter.get(
+  //todo 1.include habitRecord
   '/:studyId',
   validate('params', studyIdParamSchema),
   async (req, res, next) => {
@@ -73,10 +73,11 @@ studyRouter.get('/:studyId/habits/today', async (req, res, next) => {
   }
 });
 
-// 담당: 000
+// 담당: 안예진
 studyRouter.get('/:studyId/emojis', async (req, res, next) => {
   try {
-    // getStudyEmojis 핸들러 구현
+    const { studyId: id } = req.params;
+    const { emojis } = req.body;
   } catch (error) {
     next(error);
   }
@@ -120,7 +121,7 @@ studyRouter.post('/:studyId/habits', async (req, res, next) => {
   }
 });
 
-// 담당: 000
+// 담당: 안예진
 studyRouter.post('/:studyId/emojis', async (req, res, next) => {
   try {
     // registerEmoji 핸들러 구현
