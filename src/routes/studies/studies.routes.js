@@ -23,9 +23,7 @@ import { comparePassword, hashPassword } from '#utils/password.utils.js';
 import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 
-import studiesRepository, {
-  updateStudy,
-} from '../../repositories/studies.repository.js';
+import studiesRepository from '../../repositories/studies.repository.js';
 
 export const studyRouter = express.Router();
 
@@ -92,14 +90,19 @@ studyRouter.get(
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
-      const stats = await studiesRepository.getEmojiStats(studyId);
       const study = await studiesRepository.findStudyById(studyId);
 
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      res.status(HTTP_STATUS.OK).json(stats);
+      // 3.배열을 객체 형태로 변환 {'👩‍💻': 38, '👍': 11}
+      const formattedStats = emojiStatsArray.reduce((acc, curr) => {
+        // Prisma의 groupBy 결과 구조 바탕으로 작성
+        acc[curr.type] = curr._count.type;
+        return acc;
+      }, {});
+      res.status(HTTP_STATUS.OK).json(formattedStats);
     } catch (error) {
       next(error);
     }
@@ -154,6 +157,11 @@ studyRouter.post(
       const { studyId } = req.params;
       const { type } = req.body;
 
+      const study = await studiesRepository.findStudyById(studyId);
+
+      if (!study) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
       await studiesRepository.createEmoji(studyId, type);
       //2.최신 이모지 카운팅 가져오기
       const emojiStatsArray = await studiesRepository.getEmojiStats(studyId);
@@ -285,41 +293,6 @@ studyRouter.delete(
 
       await studiesRepository.deleteStudy(id);
       res.status(HTTP_STATUS.NO_CONTENT).send();
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-//비밀번호 확인
-//담당: 안예진
-studyRouter.post(
-  '/:studyId/password/verify',
-  validate('params', studyIdParamSchema),
-  validate('body', verifyPasswordSchema),
-  async (req, res, next) => {
-    try {
-      const { studyId: id } = req.params;
-      const { password } = req.body;
-
-      const study = await studiesRepository.findStudyById(id);
-
-      if (!study) {
-        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
-      }
-
-      const isPasswordValid = await comparePassword(password, study.password);
-
-      if (!isPasswordValid) {
-        throw new UnauthorizedException(
-          STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
-        );
-      }
-
-      res.status(HTTP_STATUS.OK).json({
-        success: true,
-        message: '비밀번호 인증에 성공했습니다.',
-      });
     } catch (error) {
       next(error);
     }
