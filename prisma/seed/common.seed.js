@@ -67,29 +67,6 @@ async function main(prisma) {
       },
     });
   }
-  // // 2. 데이터 생성 로직 통합
-  // const studyPromises = xs(NUM_STUDIES_TO_CREATE).map(async () => {
-  //   const study = await makeStudy();
-  //   const habits = makeHabitsForStudy(study.id);
-  //   const emojis = makeEmojisForStudy(study.id);
-
-  //   return prisma.study.create({
-  //     data: {
-  //       ...study,
-  //       habits: {
-  //         create: habits.map(({ records, ...h }) => ({
-  //           ...h,
-  //           records: { create: records } // records는 nested create
-  //         })),
-  //       },
-  //       emojis: {
-  //         create: emojis.map(({ studyId, ...e }) => e), // studyId는 자동 매핑되므로 제외 가능
-  //       },
-  //     },
-  //   });
-  // });
-
-  // const results = await Promise.all(studyPromises);
 
   console.log('✅ 시딩 완료');
   console.log(`📊 Study: ${studies.length}`);
