@@ -290,4 +290,40 @@ studyRouter.delete(
     }
   },
 );
+
+//비밀번호 확인
+//담당: 안예진
+studyRouter.post(
+  '/:studyId/password/verify',
+  validate('params', studyIdParamSchema),
+  validate('body', verifyPasswordSchema),
+  async (req, res, next) => {
+    try {
+      const { studyId: id } = req.params;
+      const { password } = req.body;
+
+      const study = await studiesRepository.findStudyById(id);
+
+      if (!study) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
+
+      const isPasswordValid = await comparePassword(password, study.password);
+
+      if (!isPasswordValid) {
+        throw new UnauthorizedException(
+          STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
+        );
+      }
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        message: '비밀번호 인증에 성공했습니다.',
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 export default studyRouter;
