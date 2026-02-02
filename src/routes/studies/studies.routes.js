@@ -95,6 +95,7 @@ studyRouter.get(
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
+      const emojiStatsArray = await studiesRepository.getEmojiStats(studyId);
 
       // 3.배열을 객체 형태로 변환 {'👩‍💻': 38, '👍': 11}
       const formattedStats = emojiStatsArray.reduce((acc, curr) => {
