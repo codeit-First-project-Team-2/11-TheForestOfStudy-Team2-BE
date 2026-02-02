@@ -11,7 +11,6 @@ import { validate } from '#middlewares/validate.middleware.js';
 import {
   createStudySchema,
   studyIdParamSchema,
-  updateStudySchema,
   updateStudyWithPasswordSchema,
   deleteStudySchema,
   verifyPasswordSchema,
@@ -39,26 +38,26 @@ studyRouter.get('/', async (req, res, next) => {
   }
 });
 
-// // 담당: 안예진
-// studyRouter.get(
-//   '/:studyId',
-//   validate('params', studyIdParamSchema),
-//   async (req, res, next) => {
-//     try {
-//       const { studyId: id } = req.params;
-//       const study = await studiesRepository.findById(id);
+// 담당: 안예진
+studyRouter.get(
+  '/:studyId',
+  validate('params', studyIdParamSchema),
+  async (req, res, next) => {
+    try {
+      const { studyId: id } = req.params;
+      const study = await studiesRepository.findById(id);
 
-//       if (!study) {
-//         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
-//       }
+      if (!study) {
+        throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+      }
 
-//       const { password, ...studyDataWithoutPassword } = study;
-//       res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
-//     } catch (error) {
-//       next(error);
-//     }
-//   },
-// );
+      const { password, ...studyDataWithoutPassword } = study;
+      res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 // 담당: 000
 studyRouter.get(
@@ -156,10 +155,17 @@ studyRouter.post(
       const { type } = req.body;
 
       await studiesRepository.createEmoji(studyId, type);
+      //2.최신 이모지 카운팅 가져오기
+      const emojiStatsArray = await studiesRepository.getEmojiStats(studyId);
 
-      const updateEmoji = await studiesRepository.getEmojiStats(studyId);
+      // 3.배열을 객체 형태로 변환 {'👩‍💻': 38, '👍': 11}
+      const formattedStats = emojiStatsArray.reduce((acc, curr) => {
+        // Prisma의 groupBy 결과 구조 바탕으로 작성
+        acc[curr.type] = curr._count.type;
+        return acc;
+      }, {});
 
-      res.status(HTTP_STATUS.OK).json(updateEmoji);
+      res.status(HTTP_STATUS.OK).json(formattedStats);
     } catch (error) {
       next(error);
     }
