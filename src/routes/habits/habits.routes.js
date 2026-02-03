@@ -27,9 +27,7 @@ import { ERROR_MESSAGES } from '#constants';
 
 const habitRouter = express.Router({ mergeParams: true });
 
-/* -------------------------------------------------------------------------- */
-/*                               공통 유틸/헬퍼                                 */
-/* -------------------------------------------------------------------------- */
+// 공통
 
 const candidates = ['habitCompletion', 'habitCompletionRecord', 'habitRecord'];
 
@@ -92,24 +90,20 @@ const toggleHabitCompletion = async (habitId, date) => {
     throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
   }
 
-  /**
-   * 2) date 기준 완료 기록 존재 여부 확인
-   * - 기본 가정: completion 테이블 컬럼이 habitId, date
-   * - 다르면 여기(where/data의 date 필드명)만 맞춰주면 됨
-   */
+
   const existing = await completionModel.findFirst({
     where: { habitId, date },
     select: { id: true },
   });
 
-  // 3) 있으면 삭제(해제)
+
   if (existing) {
     await completionModel.delete({ where: { id: existing.id } });
 
     return { habitId, date, isCompleted: false };
   }
 
-  // 4) 없으면 생성(완료)
+
   await completionModel.create({
     data: { habitId, date },
   });
@@ -117,11 +111,8 @@ const toggleHabitCompletion = async (habitId, date) => {
   return { habitId, date, isCompleted: true };
 };
 
-/* -------------------------------------------------------------------------- */
-/*        1) 오늘의 습관 조회  GET /api/studies/:studyId/habits/today           */
-/* -------------------------------------------------------------------------- */
 /**
- * 담당: (여기에 담당자명)
+ *  오늘의 습관 조회  GET /api/studies/:studyId/habits/today   
  */
 habitRouter.get('/today', async (req, res, next) => {
   try {
@@ -171,18 +162,15 @@ habitRouter.get('/today', async (req, res, next) => {
   }
 });
 
-/* -------------------------------------------------------------------------- */
-/*            2) 습관 생성  POST /api/studies/:studyId/habits                  */
-/* -------------------------------------------------------------------------- */
 /**
- * 담당: (여기에 담당자명)
+ * 습관 생성  POST /api/studies/:studyId/habits 
  */
 habitRouter.post('/', async (req, res, next) => {
   try {
     const { studyId } = req.params;
     const { name } = req.body;
 
-    // validate 사용한다면 여기에
+    // validate 
     // validate(createHabitSchema, req);
 
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -218,11 +206,9 @@ habitRouter.post('/', async (req, res, next) => {
   }
 });
 
-/* -------------------------------------------------------------------------- */
-/*          3) 완료/해제 토글  PATCH /api/habits/:habitId/toggle               */
-/* -------------------------------------------------------------------------- */
+
 /**
- * 담당: (여기에 담당자명)
+ * 완료/해제 토글  PATCH /api/habits/:habitId/toggle   
  */
 habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
   try {
@@ -238,17 +224,14 @@ habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
   }
 });
 
-/* -------------------------------------------------------------------------- */
-/*             4) 습관 종료  DELETE /api/habits/:habitId (soft delete)         */
-/* -------------------------------------------------------------------------- */
 /**
- * 담당: (여기에 담당자명)
+ *  습관 종료  DELETE /api/habits/:habitId (soft delete)   
  */
 habitRouter.delete('/:habitId', async (req, res, next) => {
   try {
     const { habitId } = req.params;
 
-    // validate 사용한다면 여기에
+    // validate 
     // validate(deleteHabitSchema, req);
 
     const existHabit = await prisma.habit.findFirst({
