@@ -42,7 +42,7 @@ export const STUDY_ERROR_MESSAGES = {
 
   STUDY_NOT_FOUND: '스터디를 찾을 수 없습니다.',
   STUDY_INVALID: 'studyId는 26자 이내여야 합니다.',
-   STUDY_FORMAT_INVALID: '허용되지 않는 studyId 형식입니다.',
+  STUDY_FORMAT_INVALID: '허용되지 않는 studyId 형식입니다.',
 };
 
 export const HABIT_ERROR_MESSAGES = {
@@ -51,6 +51,7 @@ export const HABIT_ERROR_MESSAGES = {
 
 export const EMOJI_ERROR_MESSAGES = {
   EMOJI_LIMIT_EXCEEDED: '한 스터디에 등록 가능한 이모지 개수를 초과했습니다.',
+  EMOJI_FORMAT_INVALID: '허용되지 않는 이모지 타입입니다.',
 };
 
 /**
