@@ -7,16 +7,10 @@
 //중요! const 000Router = express.Router({ mergeParams: true })
 // { mergeParams: true }<--- 이 부분을 추가해야 부모로부터 studyId를 받을 수 있습니다.
 //
-import express from 'express';
+
 import habitRouter from './habits.routes.js';
-
-const router = express.Router();
-
-//api/habits/*
-router.use('/habits', habitRouter);
 
 //api/studies/:studyId/habits/*
 router.use('/studies/:studyId/habits', habitRouter);
 
-export default router;
-
+export default habitRouter;

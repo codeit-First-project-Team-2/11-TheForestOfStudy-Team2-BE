@@ -5,47 +5,15 @@
  * - 공통 에러 처리는 error middleware로 위임
  */
 
-/**
- * 📌 파일 작성 규칙
- * - 각각 담당하신 API 파트에 담당 이름 작성하시고 내용 추가해주세요.
- * - validate 사용해 유효성 검사
- * - 공통 에러 처리는 error middleware로 위임
- */
-
-/**
- * 📌 파일 작성 규칙
- * - 각각 담당하신 API 파트에 담당 이름 작성하시고 내용 추가해주세요.
- * - validate 사용해 유효성 검사
- * - 공통 에러 처리는 error middleware로 위임
- */
-
 import express from 'express';
 import { prisma } from '#config/prisma.js';
 import { HTTP_STATUS } from '#constants';
 import { NotFoundException } from '#exceptions';
 import { ERROR_MESSAGES } from '#constants';
+import { findHabitsByStudyId } from '#repositories/habits.repository.js';
+import { findCompletionsByHabitIdsAndDate } from '#repositories/habitCompletions.repository.js';
 
 const habitRouter = express.Router({ mergeParams: true });
-
-// 공통
-
-const candidates = ['habitCompletion', 'habitCompletionRecord', 'habitRecord'];
-
-const getCompletionModel = () => {
-  for (const key of candidates) {
-    if (prisma?.[key]) {
-      return prisma[key];
-    }
-  }
-
-  const error = new Error(
-    '완료 기록 모델(prisma.habitCompletion 등)을 찾을 수 없습니다. Prisma schema의 모델명을 확인해주세요.',
-  );
-  error.statusCode = 500;
-  throw error;
-};
-
-const isValidYyyyMmDd = (value) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value);
 
 const getTodayInTimezone = (timezone) => {
   const formatter = new Intl.DateTimeFormat('en-CA', {
@@ -60,11 +28,13 @@ const getTodayInTimezone = (timezone) => {
 
 const resolveDateAndTimezone = (req) => {
   const timezone =
-    typeof req.query.timezone === 'string' && req.query.timezone.trim().length > 0
+    typeof req.query.timezone === 'string' &&
+    req.query.timezone.trim().length > 0
       ? req.query.timezone
       : 'Asia/Seoul';
 
-  const dateQuery = typeof req.query.date === 'string' ? req.query.date : undefined;
+  const dateQuery =
+    typeof req.query.date === 'string' ? req.query.date : undefined;
 
   if (dateQuery && !isValidYyyyMmDd(dateQuery)) {
     const error = new Error('date 형식 오류 (YYYY-MM-DD)');
@@ -90,19 +60,16 @@ const toggleHabitCompletion = async (habitId, date) => {
     throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
   }
 
-
   const existing = await completionModel.findFirst({
     where: { habitId, date },
     select: { id: true },
   });
-
 
   if (existing) {
     await completionModel.delete({ where: { id: existing.id } });
 
     return { habitId, date, isCompleted: false };
   }
-
 
   await completionModel.create({
     data: { habitId, date },
@@ -112,7 +79,7 @@ const toggleHabitCompletion = async (habitId, date) => {
 };
 
 /**
- *  오늘의 습관 조회  GET /api/studies/:studyId/habits/today   
+ *  오늘의 습관 조회  GET /api/studies/:studyId/habits/today
  */
 habitRouter.get('/today', async (req, res, next) => {
   try {
@@ -120,31 +87,22 @@ habitRouter.get('/today', async (req, res, next) => {
 
     const { date } = resolveDateAndTimezone(req);
 
-    const study = await prisma.study.findUnique({
-      where: { id: studyId },
-      select: { id: true },
-    });
+    const study = await findStudyById({ id: studyId, select: { id: true } });
 
     if (!study) {
       throw new NotFoundException('studyId에 해당하는 스터디 없음');
     }
 
-    const habits = await prisma.habit.findMany({
-      where: { studyId, deletedAt: null },
-      select: { id: true, name: true },
-      orderBy: { createdAt: 'asc' },
-    });
+    const habits = await findHabitsByStudyId({ studyId });
 
     // 완료 여부 계산 (date 기준)
     const completionModel = getCompletionModel();
     const habitIds = habits.map((h) => h.id);
 
-    const completions = habitIds.length
-      ? await completionModel.findMany({
-          where: { habitId: { in: habitIds }, date },
-          select: { habitId: true },
-        })
-      : [];
+    const completions = await findCompletionsByHabitIdsAndDate({
+      habitIds,
+      date,
+    });
 
     const completedSet = new Set(completions.map((c) => c.habitId));
 
@@ -163,14 +121,14 @@ habitRouter.get('/today', async (req, res, next) => {
 });
 
 /**
- * 습관 생성  POST /api/studies/:studyId/habits 
+ * 습관 생성  POST /api/studies/:studyId/habits
  */
 habitRouter.post('/', async (req, res, next) => {
   try {
     const { studyId } = req.params;
     const { name } = req.body;
 
-    // validate 
+    // validate
     // validate(createHabitSchema, req);
 
     if (typeof name !== 'string' || name.trim().length === 0) {
@@ -206,9 +164,8 @@ habitRouter.post('/', async (req, res, next) => {
   }
 });
 
-
 /**
- * 완료/해제 토글  PATCH /api/habits/:habitId/toggle   
+ * 완료/해제 토글  PATCH /api/habits/:habitId/toggle
  */
 habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
   try {
@@ -225,13 +182,13 @@ habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
 });
 
 /**
- *  습관 종료  DELETE /api/habits/:habitId (soft delete)   
+ *  습관 종료  DELETE /api/habits/:habitId (soft delete)
  */
 habitRouter.delete('/:habitId', async (req, res, next) => {
   try {
     const { habitId } = req.params;
 
-    // validate 
+    // validate
     // validate(deleteHabitSchema, req);
 
     const existHabit = await prisma.habit.findFirst({
