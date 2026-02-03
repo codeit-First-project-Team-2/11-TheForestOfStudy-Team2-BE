@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { EMOJI_LIMITS, STUDY_LIMITS } from './validation.constant.js';
+import {
+  EMOJI_LIMITS,
+  STUDY_LIMITS,
+} from '../../constants/validation.constant.js';
 import { EMOJI_ERROR_MESSAGES, REGEX } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
@@ -61,6 +64,7 @@ export const verifyPasswordSchema = z.object({
 export const deleteStudySchema = z.object({
   password: createStudySchema.shape.password,
 });
+
 // 수정 + 비밀번호 포함 스키마
 export const updateStudyWithPasswordSchema = z.object({
   password: createStudySchema.shape.password,

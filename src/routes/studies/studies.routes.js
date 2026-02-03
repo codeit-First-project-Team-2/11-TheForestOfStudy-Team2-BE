@@ -15,7 +15,7 @@ import {
   deleteStudySchema,
   verifyPasswordSchema,
   createEmojiSchema,
-} from '#schemas/study.schema.js';
+} from './study.schema.js';
 
 import { HTTP_STATUS } from '#constants';
 import { comparePassword, hashPassword } from '#utils/password.utils.js';
