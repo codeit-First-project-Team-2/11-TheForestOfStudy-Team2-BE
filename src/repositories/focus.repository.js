@@ -12,4 +12,6 @@ function updateStudyPoints(studyId, earnedPoint) {
   });
 }
 
-export const focusRepository = { findStudyId, updateStudyPoints };
+const focusRepository = { findStudyId, updateStudyPoints };
+
+export default focusRepository;

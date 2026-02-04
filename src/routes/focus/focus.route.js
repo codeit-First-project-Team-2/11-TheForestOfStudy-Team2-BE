@@ -1,6 +1,6 @@
 import express from 'express';
 import { comparePassword } from '#utils/password.utils.js';
-import { focusRepository } from '../../repositories/focus.repository.js';
+import focusRepository from '#repositories/focus.repository.js';
 import { HTTP_STATUS } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from '#constants';
