@@ -1,12 +1,10 @@
 import express from 'express';
-import { HTTP_STATUS } from '#constants';
 import { NotFoundException } from '#exceptions';
-import { ERROR_MESSAGES } from '#constants';
-import { findHabitsByStudyId } from '#repositories/habits.repository.js';
-import habitsRepository from '#repositories/habits.repository.js';
-import { validate } from '#middlewares/validate.middleware.js';
-// import { habitIdParamSchema } from './habits.schema.js';
+import { HTTP_STATUS, ERROR_MESSAGES } from '#constants';
+import { validate } from '#middlewares/validate.js';
+import { habitIdParamSchema } from './habits.schema.js';
 import studiesRepository from '#repositories/studies.repository.js';
+import { habitsRepository } from '#repositories/habits.repository.js';
 
 import { studyIdParamSchema } from '../studies/study.schema.js';
 
@@ -33,8 +31,11 @@ const resolveDateAndTimezone = (req) => {
   const dateQuery =
     typeof req.query.date === 'string' ? req.query.date : undefined;
 
+  const isValidYyyyMmDd = (value) => {
+    return /^\d{4}-\d{2}-\d{2}$/.test(value);
+  };
+
   if (dateQuery && !isValidYyyyMmDd(dateQuery)) {
-    // isValidYyyyMmDd 함수가 정의되어있지 않음
     const error = new Error('date 형식 오류 (YYYY-MM-DD)');
     error.statusCode = 400;
     throw error;
@@ -46,36 +47,26 @@ const resolveDateAndTimezone = (req) => {
 };
 
 const toggleHabitCompletion = async (habitId, date) => {
-  // const completionModel = getCompletionModel();
-
-  const habit = await habitsRepository.findActiveHabitById(habitId);
+  const habit = await habitsRepository.findActiveHabitById({ habitId });
 
   if (!habit) {
     throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
   }
 
-  const existing = await completionModel.findFirst({
-    // model 삭제, repository 분리
-    where: { habitId, date },
-    select: { id: true },
-  });
+  const { isCompleted } =
+    await habitsRepository.toggleCompletionByHabitIdAndDate({
+      habitId,
+      date,
+    });
 
-  if (existing) {
-    await completionModel.delete({ where: { id: existing.id } }); // model 삭제, repository 분리
-
-    return { habitId, date, isCompleted: false };
-  }
-
-  await completionModel.create({
-    // model 삭제, repository 분리
-    data: { habitId, date },
-  });
-
-  return { habitId, date, isCompleted: true };
+  return { habitId, date, isCompleted };
 };
 
 // 오늘의 습관 조회  GET /api/studies/:studyId/habits/today
-habitRouter.get('/today', async (req, res, next) => {
+habitRouter.get(
+  '/today',
+  validate('params', studyIdParamSchema),
+  async (req, res, next) => {
   try {
     const { studyId } = req.params;
 
@@ -90,10 +81,10 @@ habitRouter.get('/today', async (req, res, next) => {
       throw new NotFoundException('studyId에 해당하는 스터디 없음');
     }
 
-    const habits = await findHabitsByStudyId({ studyId });
+    const habits = await habitsRepository.findHabitsByStudyId({ studyId });
 
     // 완료 여부 계산 (date 기준)
-    // const completionModel = getCompletionModel();
+
     const habitIds = habits.map((h) => h.id);
 
     const completions = await habitsRepository.findCompletionsByHabitIdsAndDate(
@@ -135,7 +126,10 @@ habitRouter.post(
         throw new NotFoundException('studyId에 해당하는 스터디 없음');
       }
 
-      const createdHabit = await habitsRepository.createdHabit(studyId, name);
+      const createdHabit = await habitsRepository.createHabit({
+        studyId,
+        name,
+      });
 
       res.status(HTTP_STATUS.CREATED).json(createdHabit);
     } catch (error) {
@@ -145,20 +139,23 @@ habitRouter.post(
 );
 
 // 완료/해제 토글  PATCH /api/habits/:habitId/toggle
-habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
-  try {
-    const { habitId } = req.params;
+habitRouter.patch(
+  '/:habitId/toggle',
+  validate('params', habitIdParamSchema),
+  async (req, res, next) => {
+    try {
+      const { habitId } = req.params;
 
-    const { date } = resolveDateAndTimezone(req);
+      const { date } = resolveDateAndTimezone(req);
 
-    const result = await toggleHabitCompletion(habitId, date);
+      const result = await toggleHabitCompletion(habitId, date);
 
-    res.status(HTTP_STATUS.OK).json(result);
-  } catch (error) {
-    next(error);
-  }
-});
-
+      res.status(HTTP_STATUS.OK).json(result);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 // 습관 종료  DELETE /api/habits/:habitId (soft delete)
 habitRouter.delete(
   '/:habitId',
