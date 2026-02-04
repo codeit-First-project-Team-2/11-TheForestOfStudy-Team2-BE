@@ -1,11 +1,14 @@
 import { z } from 'zod';
-import {
-  EMOJI_LIMITS,
-  STUDY_LIMITS,
-} from '../../constants/validation.constant.js';
+import { EMOJI_LIMITS, STUDY_LIMITS } from '#constants';
 import { EMOJI_ERROR_MESSAGES, REGEX } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
+
+export const studyIdParamSchema = z.object({
+  studyId: z
+    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
+    .transform((val) => val.toUpperCase()),
+});
 
 export const createStudySchema = z.object({
   nickname: z
@@ -40,11 +43,6 @@ export const createStudySchema = z.object({
     .min(STUDY_LIMITS.PASSWORD.MIN_LENGTH)
     .max(STUDY_LIMITS.PASSWORD.MAX_LENGTH)
     .regex(REGEX.NO_SPACE, STUDY_ERROR_MESSAGES.PASSWORD_NO_SPACE),
-});
-export const studyIdParamSchema = z.object({
-  studyId: z
-    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
-    .transform((val) => val.toUpperCase()),
 });
 
 // 이모지
