@@ -6,12 +6,13 @@
  */
 
 import express from 'express';
-import { prisma } from '#config/prisma.js';
 import { HTTP_STATUS } from '#constants';
 import { NotFoundException } from '#exceptions';
 import { ERROR_MESSAGES } from '#constants';
 import { findHabitsByStudyId } from '#repositories/habits.repository.js';
 import { findCompletionsByHabitIdsAndDate } from '#repositories/habitCompletions.repository.js';
+import { validate } from '#middlewares/validate.js';
+import { habitIdParamSchema } from '#schemas/habits.schema.js';
 
 const habitRouter = express.Router({ mergeParams: true });
 
@@ -50,11 +51,7 @@ const resolveDateAndTimezone = (req) => {
 const toggleHabitCompletion = async (habitId, date) => {
   const completionModel = getCompletionModel();
 
-  // 1) habit 존재 확인 (soft delete 제외)
-  const habit = await prisma.habit.findFirst({
-    where: { id: habitId, deletedAt: null },
-    select: { id: true },
-  });
+  const habit = await habitsRepository.findActiveHabitById(habitId);
 
   if (!habit) {
     throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
@@ -123,46 +120,42 @@ habitRouter.get('/today', async (req, res, next) => {
 /**
  * 습관 생성  POST /api/studies/:studyId/habits
  */
-habitRouter.post('/', async (req, res, next) => {
-  try {
-    const { studyId } = req.params;
-    const { name } = req.body;
+habitRouter.post(
+  '/',
+  validate('params', studyIdParamSchema),
+  validate('body', createHabitSchema),
+  async (req, res, next) => {
+    try {
+      const { studyId } = req.params;
+      const { name } = req.body;
 
-    // validate
-    // validate(createHabitSchema, req);
+      const study = await prisma.study.findUnique({
+        where: { id: studyId },
+        select: { id: true },
+      });
 
-    if (typeof name !== 'string' || name.trim().length === 0) {
-      const error = new Error('name은 비어있을 수 없습니다.');
-      error.statusCode = 400;
-      throw error;
+      if (!study) {
+        throw new NotFoundException('studyId에 해당하는 스터디 없음');
+      }
+
+      const createdHabit = await prisma.habit.create({
+        data: { studyId, name: name.trim() },
+        select: {
+          id: true,
+          name: true,
+          studyId: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
+        },
+      });
+
+      res.status(HTTP_STATUS.CREATED).json(createdHabit);
+    } catch (error) {
+      next(error);
     }
-
-    const study = await prisma.study.findUnique({
-      where: { id: studyId },
-      select: { id: true },
-    });
-
-    if (!study) {
-      throw new NotFoundException('studyId에 해당하는 스터디 없음');
-    }
-
-    const createdHabit = await prisma.habit.create({
-      data: { studyId, name: name.trim() },
-      select: {
-        id: true,
-        name: true,
-        studyId: true,
-        createdAt: true,
-        updatedAt: true,
-        deletedAt: true,
-      },
-    });
-
-    res.status(HTTP_STATUS.CREATED).json(createdHabit);
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 /**
  * 완료/해제 토글  PATCH /api/habits/:habitId/toggle
@@ -184,31 +177,20 @@ habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
 /**
  *  습관 종료  DELETE /api/habits/:habitId (soft delete)
  */
-habitRouter.delete('/:habitId', async (req, res, next) => {
-  try {
-    const { habitId } = req.params;
+habitRouter.delete(
+  '/:habitId',
+  validate('params', habitIdParamSchema),
+  async (req, res, next) => {
+    try {
+      const { habitId } = req.params;
 
-    // validate
-    // validate(deleteHabitSchema, req);
+      await habitsRepository.softDeleteHabitById({ habitId });
 
-    const existHabit = await prisma.habit.findFirst({
-      where: { id: habitId, deletedAt: null },
-      select: { id: true },
-    });
-
-    if (!existHabit) {
-      throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
+      res.status(HTTP_STATUS.NO_CONTENT).send();
+    } catch (error) {
+      next(error);
     }
-
-    await prisma.habit.update({
-      where: { id: habitId },
-      data: { deletedAt: new Date() },
-    });
-
-    res.status(HTTP_STATUS.NO_CONTENT).send();
-  } catch (error) {
-    next(error);
-  }
-});
+  },
+);
 
 export default habitRouter;

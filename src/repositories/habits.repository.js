@@ -15,3 +15,14 @@ export const findHabitsByStudyId = async ({ studyId, select }) => {
     },
   });
 };
+
+//habitId로 "삭제되지 않은" habit 존재 확인/조회
+export const findActiveHabitById = async ({ habitId, select }) => {
+  return prisma.habit.findFirst({
+    where: {
+      id: habitId,
+      deletedAt: null,
+    },
+    select: select ?? { id: true },
+  });
+};
