@@ -16,6 +16,8 @@ function getStudyLists({ where, orderBy, skip, take }) {
   ]);
 }
 
-export const homeRepository = {
+const homeRepository = {
   getStudyLists,
 };
+
+export default homeRepository;

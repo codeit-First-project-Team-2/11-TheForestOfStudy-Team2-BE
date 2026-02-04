@@ -6,10 +6,7 @@ import { habitIdParamSchema } from './habits.schema.js';
 import studiesRepository from '#repositories/studies.repository.js';
 import { habitsRepository } from '#repositories/habits.repository.js';
 
-import {
-  studyIdParamSchema,
-  createHabitSchema,
-} from '../studies/study.schema.js';
+import { studyIdParamSchema } from '../studies/study.schema.js';
 
 const habitRouter = express.Router({ mergeParams: true });
 
@@ -117,7 +114,7 @@ habitRouter.get(
 habitRouter.post(
   '/',
   validate('params', studyIdParamSchema),
-  validate('body', createHabitSchema),
+  // validate('body', createHabitSchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
@@ -162,7 +159,7 @@ habitRouter.patch(
 // 습관 종료  DELETE /api/habits/:habitId (soft delete)
 habitRouter.delete(
   '/:habitId',
-  validate('params', habitIdParamSchema),
+  // validate('params', habitIdParamSchema),
   async (req, res, next) => {
     try {
       const { habitId } = req.params;
