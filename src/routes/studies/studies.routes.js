@@ -1,8 +1,6 @@
 import express from 'express';
-
 import { validate } from '#middlewares/validate.middleware.js';
 import { comparePassword, hashPassword } from '#utils/password.utils.js';
-
 import {
   createStudySchema,
   studyIdParamSchema,
@@ -11,10 +9,8 @@ import {
   verifyPasswordSchema,
   createEmojiSchema,
 } from './study.schema.js';
-
 import { HTTP_STATUS, STUDY_ERROR_MESSAGES } from '#constants';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
-
 import studiesRepository from '#repositories/studies.repository.js';
 import focusRouter from '../focus/focus.route.js';
 

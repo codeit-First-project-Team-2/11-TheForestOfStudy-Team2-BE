@@ -2,11 +2,9 @@ import express from 'express';
 import { NotFoundException } from '#exceptions';
 import { HTTP_STATUS, ERROR_MESSAGES } from '#constants';
 import { validate } from '#middlewares/validate.middleware.js';
-// import { habitIdParamSchema } from './habits.schema.js';
+import { studyIdParamSchema } from '../studies/study.schema.js';
 import studiesRepository from '#repositories/studies.repository.js';
 import habitsRepository from '#repositories/habits.repository.js';
-
-import { studyIdParamSchema } from '../studies/study.schema.js';
 
 const habitRouter = express.Router({ mergeParams: true });
 
@@ -67,48 +65,48 @@ habitRouter.get(
   '/today',
   validate('params', studyIdParamSchema),
   async (req, res, next) => {
-  try {
-    const { studyId } = req.params;
+    try {
+      const { studyId } = req.params;
 
-    const { date } = resolveDateAndTimezone(req);
+      const { date } = resolveDateAndTimezone(req);
 
-    const study = await studiesRepository.findStudyById({
-      id: studyId,
-      select: { id: true },
-    });
+      const study = await studiesRepository.findStudyById({
+        id: studyId,
+        select: { id: true },
+      });
 
-    if (!study) {
-      throw new NotFoundException('studyId에 해당하는 스터디 없음');
-    }
+      if (!study) {
+        throw new NotFoundException('studyId에 해당하는 스터디 없음');
+      }
 
-    const habits = await habitsRepository.findHabitsByStudyId({ studyId });
+      const habits = await habitsRepository.findHabitsByStudyId({ studyId });
 
-    // 완료 여부 계산 (date 기준)
+      // 완료 여부 계산 (date 기준)
 
-    const habitIds = habits.map((h) => h.id);
+      const habitIds = habits.map((h) => h.id);
 
-    const completions = await habitsRepository.findCompletionsByHabitIdsAndDate(
-      {
-        habitIds,
+      const completions =
+        await habitsRepository.findCompletionsByHabitIdsAndDate({
+          habitIds,
+          date,
+        });
+
+      const completedSet = new Set(completions.map((c) => c.habitId));
+
+      res.status(HTTP_STATUS.OK).json({
+        studyId,
         date,
-      },
-    );
-
-    const completedSet = new Set(completions.map((c) => c.habitId));
-
-    res.status(HTTP_STATUS.OK).json({
-      studyId,
-      date,
-      habits: habits.map((h) => ({
-        id: h.id,
-        name: h.name,
-        isCompleted: completedSet.has(h.id),
-      })),
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+        habits: habits.map((h) => ({
+          id: h.id,
+          name: h.name,
+          isCompleted: completedSet.has(h.id),
+        })),
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+);
 
 // 습관 생성  POST /api/studies/:studyId/habits
 habitRouter.post(

@@ -1,8 +1,8 @@
 import express from 'express';
 import { validate } from '#middlewares/validate.middleware.js';
-import homeRepository from '#repositories/home.repository.js';
 import { HTTP_STATUS } from '#constants';
 import { homePageSchema } from './home.schema.js';
+import homeRepository from '#repositories/home.repository.js';
 
 const homeRouter = express.Router();
 

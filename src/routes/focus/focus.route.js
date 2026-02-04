@@ -1,14 +1,17 @@
 import express from 'express';
 import { comparePassword } from '#utils/password.utils.js';
-import focusRepository from '#repositories/focus.repository.js';
-import { HTTP_STATUS } from '#constants';
-import { STUDY_ERROR_MESSAGES } from '#constants';
-import { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from '#constants';
+import {
+  HTTP_STATUS,
+  STUDY_ERROR_MESSAGES,
+  DEFAULT_SETTING_MINUTES,
+  DEFAULT_GETTING_POINTS,
+} from '#constants';
 import {
   NotFoundException,
   UnauthorizedException,
   BadRequestException,
 } from '#exceptions';
+import focusRepository from '#repositories/focus.repository.js';
 
 const focusRouter = express.Router({ mergeParams: true });
 
