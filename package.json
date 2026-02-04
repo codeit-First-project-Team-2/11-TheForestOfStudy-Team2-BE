@@ -13,7 +13,8 @@
     "#utils/*": "./src/utils/*",
     "#constants": "./src/constants/index.js",
     "#db/*": "./src/db/*",
-    "#exceptions": "./src/exceptions/index.js"
+    "#exceptions": "./src/exceptions/index.js",
+    "#repositories/*": "./src/repositories/*"
   },
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",

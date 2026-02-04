@@ -11,7 +11,7 @@ import {
   HABITS,
 } from './seed.constants.js';
 import { hashPassword } from '#utils/password.utils.js';
-import { STUDY_LIMITS } from '#schemas/validation.constant.js';
+import { STUDY_LIMITS } from '#constants';
 
 export const xs = (n) => Array.from({ length: n }, (_, i) => i + 1);
 
@@ -56,6 +56,10 @@ export const makePassword = async () => {
   return hashPassword(raw);
 };
 
+console.log(faker.person.firstName());
+console.log(STUDY_LIMITS.NICKNAME);
+console.log(slice(faker.person.firstName(), STUDY_LIMITS.NICKNAME));
+
 // Study
 export const makeStudy = async () => {
   const studyId = faker.string.ulid();
@@ -63,7 +67,7 @@ export const makeStudy = async () => {
 
   const study = {
     id: studyId,
-    nickname: slice(faker.person.firstName(), STUDY_LIMITS.NICKNAME),
+    nickname: faker.person.firstName(),
     title,
     introduction: makeIntroduction(title),
     background: faker.helpers.arrayElement(ALLOWED_BACKGROUND_PATHS),

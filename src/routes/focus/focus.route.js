@@ -1,6 +1,6 @@
 import express from 'express';
 import { comparePassword } from '#utils/password.utils.js';
-import { focusRepository } from '../../repositories/focus.repository.js';
+import { focusRepository } from '#repositories/focus.repository.js';
 import { HTTP_STATUS } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from '#constants';
@@ -16,6 +16,9 @@ const focusRouter = express.Router({ mergeParams: true });
 focusRouter.post('/password/verify', async (req, res, next) => {
   const { studyId } = req.params;
   const { password: inputPassword } = req.body;
+
+  console.log(`[SEED DEBUG] 원래 비밀번호: ${inputPassword}`);
+  // password = '1234'
 
   try {
     const study = await focusRepository.findStudyId(studyId); //repository 사용

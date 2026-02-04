@@ -7,9 +7,9 @@ import { errorHandler } from '#middlewares/error.middleware.js';
 
 const app = express();
 
-app.use(logger);
-app.use(cors);
 app.use(express.json());
+app.use(cors);
+app.use(logger);
 
 // Health 체크
 app.get('/health', (req, res) => {
@@ -20,7 +20,7 @@ app.get('/health', (req, res) => {
 });
 
 // 모든 라우트 등록
-app.use('/api', router);
+app.use('/', router); // api 넣고 에러 발생해서 제거
 
 // 에러 핸들러
 app.use(errorHandler);

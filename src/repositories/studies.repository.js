@@ -1,14 +1,16 @@
 import { prisma } from '#config/prisma.js';
 
-// 전체 조회
-export const findAll = async () => {
-  return await prisma.study.findMany();
-  //작성
+export const findAllStudies = async () => {
+  return prisma.study.findMany({
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
 };
 
 // ID로 상세 조회
 export const findStudyById = async (id) => {
-  return await prisma.study.findUnique({
+  return prisma.study.findUnique({
     where: { id },
     include: {
       habits: {
@@ -21,11 +23,17 @@ export const findStudyById = async (id) => {
   });
 };
 
-// 생성
-export const create = async (data) => {
-  return await prisma.study.create({
-    data,
+// repository
+export const existsById = async (studyId) => {
+  return prisma.study.findUnique({
+    where: { id: studyId },
+    select: { id: true },
   });
+};
+
+// 생성
+export const createStudy = async (data) => {
+  return prisma.study.create({ data });
 };
 
 // 수정
@@ -38,13 +46,14 @@ export const updateStudy = async (id, data) => {
 
 // 삭제
 export const deleteStudy = async (id) => {
-  return await prisma.study.delete({
+  return prisma.study.delete({
     where: { id },
   });
 };
+
 //이모지 카운팅
 export const getEmojiStats = async (studyId) => {
-  return await prisma.emoji.groupBy({
+  return prisma.emoji.groupBy({
     by: ['type'],
     where: { studyId },
     _count: { type: true },
@@ -53,9 +62,10 @@ export const getEmojiStats = async (studyId) => {
     },
   });
 };
+
 //이모지 생성
 export const createEmoji = async (studyId, type) => {
-  return await prisma.emoji.create({
+  return prisma.emoji.create({
     data: {
       studyId, //fk
       type,
@@ -63,13 +73,14 @@ export const createEmoji = async (studyId, type) => {
   });
 };
 
-const studiesrepository = {
-  findAll,
+const studiesRepository = {
+  findAllStudies,
   findStudyById,
-  create,
+  createStudy,
   updateStudy,
   deleteStudy,
   getEmojiStats,
   createEmoji,
 };
-export default studiesrepository;
+
+export default studiesRepository;

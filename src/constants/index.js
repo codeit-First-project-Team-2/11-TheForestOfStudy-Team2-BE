@@ -16,3 +16,9 @@ export {
   DEFAULT_SETTING_MINUTES,
   DEFAULT_GETTING_POINTS,
 } from './timer.constant.js';
+
+export {
+  STUDY_LIMITS,
+  HABIT_LIMITS,
+  EMOJI_LIMITS,
+} from './validation.constant.js';

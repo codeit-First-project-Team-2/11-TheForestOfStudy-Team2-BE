@@ -17,7 +17,7 @@ const parseEnvironment = () => {
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
-      const { fieldErrors } = flattenError(error);
+      const { fieldErrors } = z.flattenError(error);
       console.error('환경 변수 검증 실패:', fieldErrors);
     }
     process.exit(1);
@@ -32,6 +32,7 @@ export const isTest = config.NODE_ENV === 'test';
 
 export const DEVELOPMENT_ORIGINS = [
   'http://localhost:3000', // 로컬 포트
+  'http://localhost:5001',
   'http://localhost:5173', // vite 기본 포트
 ];
 export const PRODUCTION_ORIGINS = [

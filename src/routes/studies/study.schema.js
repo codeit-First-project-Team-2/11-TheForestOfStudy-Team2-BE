@@ -1,8 +1,14 @@
 import { z } from 'zod';
-import { EMOJI_LIMITS, STUDY_LIMITS } from './validation.constant.js';
+import { EMOJI_LIMITS, STUDY_LIMITS } from '#constants';
 import { EMOJI_ERROR_MESSAGES, REGEX } from '#constants';
 import { STUDY_ERROR_MESSAGES } from '#constants';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
+
+export const studyIdParamSchema = z.object({
+  studyId: z
+    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
+    .transform((val) => val.toUpperCase()),
+});
 
 export const createStudySchema = z.object({
   nickname: z
@@ -38,11 +44,6 @@ export const createStudySchema = z.object({
     .max(STUDY_LIMITS.PASSWORD.MAX_LENGTH)
     .regex(REGEX.NO_SPACE, STUDY_ERROR_MESSAGES.PASSWORD_NO_SPACE),
 });
-export const studyIdParamSchema = z.object({
-  studyId: z
-    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
-    .transform((val) => val.toUpperCase()),
-});
 
 // 이모지
 export const createEmojiSchema = z.object({
@@ -61,6 +62,7 @@ export const verifyPasswordSchema = z.object({
 export const deleteStudySchema = z.object({
   password: createStudySchema.shape.password,
 });
+
 // 수정 + 비밀번호 포함 스키마
 export const updateStudyWithPasswordSchema = z.object({
   password: createStudySchema.shape.password,

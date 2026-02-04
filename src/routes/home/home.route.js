@@ -1,17 +1,12 @@
 import express from 'express';
-import { z } from 'zod';
-import { homeRepository } from '../repositories/home.repository.js';
+import { validate } from '#middlewares/validate.middleware.js';
+import { homeRepository } from '../../repositories/home.repository.js';
 import { HTTP_STATUS } from '#constants';
+import { homePageSchema } from './home.schema.js';
 
 const homeRouter = express.Router();
 
-const homePageSchema = z.object({
-  page: z.coerce.number().min(1).default(1),
-  limit: z.coerce.number().min(1).default(6),
-  keyword: z.string().trim().default(''),
-  sort: z.string().optional(),
-});
-
+// 담당: 김민성
 homeRouter.get(
   '/',
   validate('query', homePageSchema),
@@ -65,3 +60,5 @@ homeRouter.get(
     }
   },
 );
+
+export default homeRouter;

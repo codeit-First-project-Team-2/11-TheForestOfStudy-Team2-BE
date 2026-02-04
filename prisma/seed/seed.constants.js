@@ -11,12 +11,12 @@ export const HABIT_COUNT = {
 export const EMOJI_COUNT = {
   MIN: 1,
   MAX: 20,
-}
+};
 
 export const TOTAL_POINT_LIMIT = {
   MIN: 1,
   MAX: 100,
-}
+};
 
 export const SUBJECTS = [
   'HTML',
@@ -54,17 +54,36 @@ export const INTRO_TEMPLATES = [
 
 export const EMOJI_TYPES = [
   // 응원
-  '🔥', '💪', '👏', '🙌', '👍', '✨',
-  '🎉', '🚀', '🌱', '⭐️',
+  '🔥',
+  '💪',
+  '👏',
+  '🙌',
+  '👍',
+  '✨',
+  '🎉',
+  '🚀',
+  '🌱',
+  '⭐️',
 
   // 공부, 기록
-  '📚', '✏️', '📝', '📖', '💻',
+  '📚',
+  '✏️',
+  '📝',
+  '📖',
+  '💻',
 
   // 성취, 완료
-  '✅', '☑️', '🏆', '🥇',
+  '✅',
+  '☑️',
+  '🏆',
+  '🥇',
 
   // 감정
-  '😊', '😄', '😆', '🤩', '🥹',
+  '😊',
+  '😄',
+  '😆',
+  '🤩',
+  '🥹',
 ];
 
 export const HABITS = [
