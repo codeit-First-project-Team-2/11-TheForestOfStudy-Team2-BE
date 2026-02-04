@@ -17,6 +17,9 @@ focusRouter.post('/password/verify', async (req, res, next) => {
   const { studyId } = req.params;
   const { password: inputPassword } = req.body;
 
+  console.log(`[SEED DEBUG] 원래 비밀번호: ${inputPassword}`);
+  // password = '1234'
+
   try {
     const study = await focusRepository.findStudyId(studyId); //repository 사용
     const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
@@ -36,6 +39,7 @@ focusRouter.post('/password/verify', async (req, res, next) => {
       message: '인증 성공',
       data: {
         nickname: study.nickname,
+        title: study.title,
         totalPoint: study.totalPoint,
       },
     });

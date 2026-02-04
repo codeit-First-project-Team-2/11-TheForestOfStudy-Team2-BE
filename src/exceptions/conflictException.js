@@ -3,7 +3,7 @@ import { ERROR_MESSAGES } from '#constants';
 import { HTTP_STATUS } from '#constants';
 
 export class ConflictException extends HttpException {
-  constructor(message = ERROR_MESSAGES.RESOURCE_CONFLICT, detailes = null) {
+  constructor(message = ERROR_MESSAGES.RESOURCE_CONFLICT, details = null) {
     super(HTTP_STATUS.CONFLICT, message, details);
   }
 }

@@ -77,7 +77,43 @@ const toggleHabitCompletion = async (habitId, date) => {
 // 오늘의 습관 조회  GET /api/studies/:studyId/habits/today
 habitRouter.get('/today', async (req, res, next) => {
   try {
-    // updateHabit 핸들러 구현
+    const { studyId } = req.params;
+
+    const { date } = resolveDateAndTimezone(req);
+
+    const study = await studiesRepository.findStudyById({
+      id: studyId,
+      select: { id: true },
+    });
+
+    if (!study) {
+      throw new NotFoundException('studyId에 해당하는 스터디 없음');
+    }
+
+    const habits = await findHabitsByStudyId({ studyId });
+
+    // 완료 여부 계산 (date 기준)
+    // const completionModel = getCompletionModel();
+    const habitIds = habits.map((h) => h.id);
+
+    const completions = await habitsRepository.findCompletionsByHabitIdsAndDate(
+      {
+        habitIds,
+        date,
+      },
+    );
+
+    const completedSet = new Set(completions.map((c) => c.habitId));
+
+    res.status(HTTP_STATUS.OK).json({
+      studyId,
+      date,
+      habits: habits.map((h) => ({
+        id: h.id,
+        name: h.name,
+        isCompleted: completedSet.has(h.id),
+      })),
+    });
   } catch (error) {
     next(error);
   }
@@ -111,7 +147,13 @@ habitRouter.post(
 // 완료/해제 토글  PATCH /api/habits/:habitId/toggle
 habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
   try {
-    // deleteHabit 핸들러 구현
+    const { habitId } = req.params;
+
+    const { date } = resolveDateAndTimezone(req);
+
+    const result = await toggleHabitCompletion(habitId, date);
+
+    res.status(HTTP_STATUS.OK).json(result);
   } catch (error) {
     next(error);
   }

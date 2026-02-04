@@ -13,7 +13,8 @@
     "#utils/*": "./src/utils/*",
     "#constants": "./src/constants/index.js",
     "#db/*": "./src/db/*",
-    "#exceptions": "./src/exceptions/index.js"
+    "#exceptions": "./src/exceptions/index.js",
+    "#repositories/*": "./src/repositories/*"
   },
   "scripts": {
     "dev": "nodemon --env-file=./env/.env.development src/server.js",
@@ -37,7 +38,6 @@
     "@prisma/client": "^7.3.0",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.3",
-    "dotenv-cli": "^11.0.0",
     "express": "^5.2.1",
     "pg": "^8.17.2",
     "ulid": "^3.0.2",
@@ -45,6 +45,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@faker-js/faker": "^10.2.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.2",
     "nodemon": "^3.1.11",
     "prettier": "^3.8.1",

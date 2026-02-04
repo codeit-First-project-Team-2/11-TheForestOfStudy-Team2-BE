@@ -3,7 +3,7 @@ import { ERROR_MESSAGES } from '#constants';
 import { HTTP_STATUS } from '#constants';
 
 export class ForbiddenException extends HttpException {
-  constructor(message = ERROR_MESSAGES.FORBIDDEN_RESOURCE, detailes = null) {
+  constructor(message = ERROR_MESSAGES.FORBIDDEN_RESOURCE, details = null) {
     super(HTTP_STATUS.FORBIDDEN, message, details);
   }
 }
