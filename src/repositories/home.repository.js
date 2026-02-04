@@ -8,8 +8,10 @@ function getStudyLists({ where, orderBy, skip, take }) {
       skip,
       take,
       include: {
-        user: true, // 작성자의 모든 정보(id, nickname, profileImage 등)를 가져옴
-        emojis: true, // 이모지 리스트 전체 포함
+        emojis: true, // 1. 여기서 이모지 모양(type)을 가져오고
+        _count: {
+          select: { emojis: true }, // 2. 여기서 이모지 전체 개수를 가져옵니다.
+        },
       },
     }),
     prisma.study.count({ where }),
