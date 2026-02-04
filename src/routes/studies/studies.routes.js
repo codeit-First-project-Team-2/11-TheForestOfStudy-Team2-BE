@@ -1,13 +1,8 @@
-/**
- * 📌 파일 작성 규칙
- * - 각각 담당하신 API 파트에 담당 이름 작성하시고 내용 추가해주세요.
- * - validate 사용해 유효성 검사
- * - 공통 에러 처리는 error middleware로 위임
- */
-
 import express from 'express';
-import { prisma } from '#config/prisma.js';
+
 import { validate } from '#middlewares/validate.middleware.js';
+import { comparePassword, hashPassword } from '#utils/password.utils.js';
+
 import {
   createStudySchema,
   studyIdParamSchema,
@@ -17,20 +12,25 @@ import {
   createEmojiSchema,
 } from './study.schema.js';
 
-import { HTTP_STATUS } from '#constants';
-import { comparePassword, hashPassword } from '#utils/password.utils.js';
-
-import { STUDY_ERROR_MESSAGES } from '#constants/errors.js';
+import { HTTP_STATUS, STUDY_ERROR_MESSAGES } from '#constants';
 import { NotFoundException, UnauthorizedException } from '#exceptions';
 
-import studiesRepository from '../../repositories/studies.repository.js';
+import studiesRepository from '#repositories/studies.repository.js';
+import focusRouter from '../focus/focus.route.js';
 
 export const studyRouter = express.Router();
 
-// 담당: 000
+// focusRouter 분리
+studyRouter.use('/:studyId', focusRouter);
+
+// 담당: 강에스더
 studyRouter.get('/', async (req, res, next) => {
   try {
-    // getStudies 핸들러 구현
+    const studies = await studiesRepository.findAllStudies();
+
+    const sanitizedStudies = studies.map(({ password: _, ...rest }) => rest);
+
+    res.status(HTTP_STATUS.OK).json(sanitizedStudies);
   } catch (error) {
     next(error);
   }
@@ -42,41 +42,15 @@ studyRouter.get(
   validate('params', studyIdParamSchema),
   async (req, res, next) => {
     try {
-      const { studyId: id } = req.params;
-      const study = await studiesRepository.findById(id);
+      const { studyId } = req.params;
+      const study = await studiesRepository.findStudyById(studyId);
 
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
 
-      const { password, ...studyDataWithoutPassword } = study;
-      res.status(HTTP_STATUS.OK).json(studyDataWithoutPassword);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-// 담당: 000
-studyRouter.get(
-  '/:studyId/habits',
-
-  async (req, res, next) => {
-    try {
-      // getStudyHabits 핸들러 구현
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-// 담당: 000
-studyRouter.get(
-  '/:studyId/habits/today',
-  validate('params', studyIdParamSchema),
-  async (req, res, next) => {
-    try {
-      // getTodayHabitStatus 핸들러 구현
+      const { password: _, ...rest } = study;
+      res.status(HTTP_STATUS.OK).json(rest);
     } catch (error) {
       next(error);
     }
@@ -95,6 +69,7 @@ studyRouter.get(
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
+
       const emojiStatsArray = await studiesRepository.getEmojiStats(studyId);
 
       // 3.배열을 객체 형태로 변환 {'👩‍💻': 38, '👍': 11}
@@ -120,33 +95,22 @@ studyRouter.post(
 
       const hashedPassword = await hashPassword(password);
 
-      const study = await prisma.study.create({
-        data: {
-          nickname,
-          title,
-          introduction,
-          background,
-          password: hashedPassword,
-        },
+      const study = await studiesRepository.createStudy({
+        nickname,
+        title,
+        introduction,
+        background,
+        password: hashedPassword,
       });
 
       const { password: _, ...rest } = study;
 
-      res.status(HTTP_STATUS.CREATE).json(rest);
+      res.status(HTTP_STATUS.CREATED).json(rest);
     } catch (error) {
       next(error);
     }
   },
 );
-
-// 담당: 000
-studyRouter.post('/:studyId/habits', async (req, res, next) => {
-  try {
-    // createHabit 핸들러 구현
-  } catch (error) {
-    next(error);
-  }
-});
 
 // 담당: 안예진
 studyRouter.post(
@@ -163,6 +127,7 @@ studyRouter.post(
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
+
       await studiesRepository.createEmoji(studyId, type);
       //2.최신 이모지 카운팅 가져오기
       const emojiStatsArray = await studiesRepository.getEmojiStats(studyId);
@@ -174,20 +139,7 @@ studyRouter.post(
         return acc;
       }, {});
 
-      res.status(HTTP_STATUS.OK).json(formattedStats);
-    } catch (error) {
-      next(error);
-    }
-  },
-);
-
-// 담당: 000
-studyRouter.post(
-  '/:studyId/focus',
-  validate('params', studyIdParamSchema),
-  async (req, res, next) => {
-    try {
-      // recordFocusTime 핸들러 구현
+      res.status(HTTP_STATUS.CREATED).json(formattedStats);
     } catch (error) {
       next(error);
     }
@@ -202,11 +154,11 @@ studyRouter.post(
   validate('body', verifyPasswordSchema),
   async (req, res, next) => {
     try {
-      const { studyId: id } = req.params;
+      const { studyId } = req.params;
       const { password } = req.body;
 
-      const study = await studiesRepository.findStudyById(id);
-      const emojiStats = await studiesRepository.getEmojiStats(id);
+      const study = await studiesRepository.findStudyById(studyId);
+      const emojiStats = await studiesRepository.getEmojiStats(studyId);
 
       if (!study) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
@@ -219,9 +171,9 @@ studyRouter.post(
         );
       }
 
-      const { password: _, ...studyData } = study;
+      const { password: _, ...rest } = study;
 
-      res.status(HTTP_STATUS.OK).json({ ...studyData, emojiStats });
+      res.status(HTTP_STATUS.CREATED).json({ ...rest, emojiStats });
     } catch (error) {
       next(error);
     }
@@ -259,9 +211,9 @@ studyRouter.patch(
         introduction,
         background,
       });
-      const { password: _, ...studyWithoutPassword } = updatedStudy;
+      const { password: _, ...rest } = updatedStudy;
 
-      res.status(HTTP_STATUS.OK).json(studyWithoutPassword);
+      res.status(HTTP_STATUS.OK).json(rest);
     } catch (error) {
       next(error);
     }
