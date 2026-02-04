@@ -94,7 +94,7 @@ const createHabit = ({ studyId, name }) => {
   });
 };
 
-export const softDeleteHabitById = async ({ habitId }) => {
+const softDeleteHabitById = async ({ habitId }) => {
   return prisma.habit.update({
     where: { id: habitId },
     data: { deletedAt: new Date() },
@@ -105,7 +105,7 @@ export const softDeleteHabitById = async ({ habitId }) => {
   });
 };
 
-export const habitsRepository = {
+const habitsRepository = {
   findHabitsByStudyId,
   findActiveHabitById,
   findCompletionsByHabitIdsAndDate,
@@ -115,3 +115,5 @@ export const habitsRepository = {
   createHabit,
   softDeleteHabitById,
 };
+
+export default habitsRepository;
