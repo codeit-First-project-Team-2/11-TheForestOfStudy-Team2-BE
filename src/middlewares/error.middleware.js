@@ -9,4 +9,4 @@ export const errorHandler = (err, req, res, _next) => {
     success: false,
     message: message,
   });
-};
+}; 
