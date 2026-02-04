@@ -67,10 +67,12 @@ const createHabit = ({ studyId, name }) => {
   });
 };
 
-export const habitsRepository = {
+const habitsRepository = {
   findHabitsByStudyId,
   findActiveHabitById,
   findCompletionsByHabitIdsAndDate,
   findStudyExists,
   createHabit,
 };
+
+export default habitsRepository;

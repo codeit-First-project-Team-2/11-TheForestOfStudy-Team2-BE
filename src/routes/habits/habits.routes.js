@@ -3,15 +3,12 @@ import { HTTP_STATUS } from '#constants';
 import { NotFoundException } from '#exceptions';
 import { ERROR_MESSAGES } from '#constants';
 import { findHabitsByStudyId } from '#repositories/habits.repository.js';
-import habitsRepository from '#repositories/habitCompletions.repository.js';
-import { validate } from '#middlewares/validate.js';
-import { habitIdParamSchema } from './habits.schema.js';
+import habitsRepository from '#repositories/habits.repository.js';
+import { validate } from '#middlewares/validate.middleware.js';
+// import { habitIdParamSchema } from './habits.schema.js';
 import studiesRepository from '#repositories/studies.repository.js';
 
-import {
-  studyIdParamSchema,
-  createHabitSchema,
-} from '../studies/study.schema.js';
+import { studyIdParamSchema } from '../studies/study.schema.js';
 
 const habitRouter = express.Router({ mergeParams: true });
 
@@ -36,7 +33,8 @@ const resolveDateAndTimezone = (req) => {
   const dateQuery =
     typeof req.query.date === 'string' ? req.query.date : undefined;
 
-  if (dateQuery && !isValidYyyyMmDd(dateQuery)) { // isValidYyyyMmDd 함수가 정의되어있지 않음
+  if (dateQuery && !isValidYyyyMmDd(dateQuery)) {
+    // isValidYyyyMmDd 함수가 정의되어있지 않음
     const error = new Error('date 형식 오류 (YYYY-MM-DD)');
     error.statusCode = 400;
     throw error;
@@ -56,7 +54,8 @@ const toggleHabitCompletion = async (habitId, date) => {
     throw new NotFoundException(ERROR_MESSAGES.RESOURCE_NOT_FOUND);
   }
 
-  const existing = await completionModel.findFirst({ // model 삭제, repository 분리
+  const existing = await completionModel.findFirst({
+    // model 삭제, repository 분리
     where: { habitId, date },
     select: { id: true },
   });
@@ -67,7 +66,8 @@ const toggleHabitCompletion = async (habitId, date) => {
     return { habitId, date, isCompleted: false };
   }
 
-  await completionModel.create({ // model 삭제, repository 분리
+  await completionModel.create({
+    // model 삭제, repository 분리
     data: { habitId, date },
   });
 
@@ -123,7 +123,7 @@ habitRouter.get('/today', async (req, res, next) => {
 habitRouter.post(
   '/',
   validate('params', studyIdParamSchema),
-  validate('body', createHabitSchema),
+  // validate('body', createHabitSchema),
   async (req, res, next) => {
     try {
       const { studyId } = req.params;
@@ -162,7 +162,7 @@ habitRouter.patch('/:habitId/toggle', async (req, res, next) => {
 // 습관 종료  DELETE /api/habits/:habitId (soft delete)
 habitRouter.delete(
   '/:habitId',
-  validate('params', habitIdParamSchema),
+  // validate('params', habitIdParamSchema),
   async (req, res, next) => {
     try {
       const { habitId } = req.params;
