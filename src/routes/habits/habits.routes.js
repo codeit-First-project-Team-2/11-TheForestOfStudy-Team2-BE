@@ -1,10 +1,10 @@
 import express from 'express';
 import { NotFoundException } from '#exceptions';
 import { HTTP_STATUS, ERROR_MESSAGES } from '#constants';
-import { validate } from '#middlewares/validate.js';
-import { habitIdParamSchema } from './habits.schema.js';
+import { validate } from '#middlewares/validate.middleware.js';
+// import { habitIdParamSchema } from './habits.schema.js';
 import studiesRepository from '#repositories/studies.repository.js';
-import { habitsRepository } from '#repositories/habits.repository.js';
+import habitsRepository from '#repositories/habits.repository.js';
 
 import { studyIdParamSchema } from '../studies/study.schema.js';
 
@@ -141,7 +141,7 @@ habitRouter.post(
 // 완료/해제 토글  PATCH /api/habits/:habitId/toggle
 habitRouter.patch(
   '/:habitId/toggle',
-  validate('params', habitIdParamSchema),
+  // validate('params', habitIdParamSchema),
   async (req, res, next) => {
     try {
       const { habitId } = req.params;
