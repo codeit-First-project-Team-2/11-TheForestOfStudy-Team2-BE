@@ -56,10 +56,6 @@ export const makePassword = async () => {
   return hashPassword(raw);
 };
 
-console.log(faker.person.firstName());
-console.log(STUDY_LIMITS.NICKNAME);
-console.log(slice(faker.person.firstName(), STUDY_LIMITS.NICKNAME));
-
 // Study
 export const makeStudy = async () => {
   const studyId = faker.string.ulid();
