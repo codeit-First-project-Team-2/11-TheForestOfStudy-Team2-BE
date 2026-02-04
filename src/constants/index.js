@@ -12,4 +12,13 @@ export { HTTP_STATUS } from './http-status.constant.js';
 
 export { REGEX } from './regex.constant.js';
 
-export { DEFAULT_SETTING_MINUTES, DEFAULT_GETTING_POINTS } from './timer.constant.js';
+export {
+  DEFAULT_SETTING_MINUTES,
+  DEFAULT_GETTING_POINTS,
+} from './timer.constant.js';
+
+export {
+  STUDY_LIMITS,
+  HABIT_LIMITS,
+  EMOJI_LIMITS,
+} from './validation.constant.js';
