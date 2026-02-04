@@ -26,3 +26,51 @@ export const findActiveHabitById = async ({ habitId, select }) => {
     select: select ?? { id: true },
   });
 };
+
+export const findCompletionsByHabitIdsAndDate = async ({ habitIds, date }) => {
+  if (!habitIds.length) {
+    return [];
+  }
+
+  return prisma.habitCompletion.findMany({
+    where: {
+      habitId: { in: habitIds },
+      date,
+    },
+    select: {
+      habitId: true,
+    },
+  });
+};
+
+const findStudyExists = (studyId) => {
+  return prisma.study.findUnique({
+    where: { id: studyId },
+    select: { id: true },
+  });
+};
+
+const createHabit = ({ studyId, name }) => {
+  return prisma.habit.create({
+    data: {
+      studyId,
+      name: name.trim(),
+    },
+    select: {
+      id: true,
+      name: true,
+      studyId: true,
+      createdAt: true,
+      updatedAt: true,
+      deletedAt: true,
+    },
+  });
+};
+
+export const habitsRepository = {
+  findHabitsByStudyId,
+  findActiveHabitById,
+  findCompletionsByHabitIdsAndDate,
+  findStudyExists,
+  createHabit,
+};
