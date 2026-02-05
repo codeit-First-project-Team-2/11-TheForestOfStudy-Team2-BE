@@ -16,40 +16,37 @@ import focusRepository from '#repositories/focus.repository.js';
 const focusRouter = express.Router({ mergeParams: true });
 
 // 담당: 김민성
-focusRouter.post('/password/verify', async (req, res, next) => {
-  const { studyId } = req.params;
-  const { password: inputPassword } = req.body;
+// focusRouter.post('/password/verify', async (req, res, next) => {
+//   const { studyId } = req.params;
+//   const { password: inputPassword } = req.body;
 
-  console.log(`[SEED DEBUG] 원래 비밀번호: ${inputPassword}`);
-  // password = '1234'
+//   try {
+//     const study = await focusRepository.findStudyId(studyId); //repository 사용
+//     const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
 
-  try {
-    const study = await focusRepository.findStudyId(studyId); //repository 사용
-    const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
+//     if (!study) {
+//       throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
+//     }
 
-    if (!study) {
-      throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
-    }
+//     if (!isValidPassword) {
+//       throw new UnauthorizedException(
+//         STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
+//       );
+//     }
 
-    if (!isValidPassword) {
-      throw new UnauthorizedException(
-        STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
-      );
-    }
-
-    return res.status(HTTP_STATUS.OK).json({
-      success: true,
-      message: '인증 성공',
-      data: {
-        nickname: study.nickname,
-        title: study.title,
-        totalPoint: study.totalPoint,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
+//     return res.status(HTTP_STATUS.OK).json({
+//       success: true,
+//       message: '인증 성공',
+//       data: {
+//         nickname: study.nickname,
+//         title: study.title,
+//         totalPoint: study.totalPoint,
+//       },
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // 담당: 김민성
 focusRouter.post('/focus', async (req, res, next) => {

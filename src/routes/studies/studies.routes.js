@@ -23,10 +23,10 @@ studyRouter.use('/:studyId', focusRouter);
 studyRouter.get('/', async (req, res, next) => {
   try {
     const studies = await studiesRepository.findAllStudies();
+    
+    const { password: _, ...rest } = studies;
 
-    const sanitizedStudies = studies.map(({ password: _, ...rest }) => rest);
-
-    res.status(HTTP_STATUS.OK).json(sanitizedStudies);
+    res.status(HTTP_STATUS.OK).json(rest);
   } catch (error) {
     next(error);
   }

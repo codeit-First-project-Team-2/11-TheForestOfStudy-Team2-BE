@@ -18,7 +18,7 @@ export const findStudyById = async (id) => {
           records: true,
         },
       },
-      //   emojis: true,
+        emojis: true,
     },
   });
 };

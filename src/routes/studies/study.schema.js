@@ -5,9 +5,10 @@ import { STUDY_ERROR_MESSAGES } from '#constants';
 import { ALLOWED_BACKGROUND_PATHS } from '#constants';
 
 export const studyIdParamSchema = z.object({
-  studyId: z
-    .ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID)
-    .transform((val) => val.toUpperCase()),
+  studyId: z.preprocess(
+    (val) => (typeof val === 'string' ? val.trim().toUpperCase() : val),
+    z.ulid(STUDY_ERROR_MESSAGES.STUDY_INVALID),
+  ),
 });
 
 export const createStudySchema = z.object({
