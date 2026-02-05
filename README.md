@@ -34,6 +34,7 @@ npm run dev
     <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat-square&logo=postgresql&logoColor=white"/>
     <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=flat-square&logo=mongodb&logoColor=white"/>
     <img src="https://img.shields.io/badge/Render-%46E3B7.svg?style=flat-square&logo=render&logoColor=white" />
+    <img src="https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white"/>
 <img src="https://img.shields.io/badge/github-181717?style=flat-square&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/notion-000000?style=flat-square&logo=notion&logoColor=white">
 <img src="https://img.shields.io/badge/figma-e05a32?style=flat-square&logo=figma&logoColor=white">
