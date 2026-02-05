@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(cors);
 app.use(logger);
 
-// Health 체크
 app.get('/health', (req, res) => {
   res.json({
     message: 'API Server Running',
@@ -19,13 +18,10 @@ app.get('/health', (req, res) => {
   });
 });
 
-// 모든 라우트 등록
-app.use('/', router); // api 넣고 에러 발생해서 제거
+app.use('/', router);
 
-// 에러 핸들러
 app.use(errorHandler);
 
-// 서버 시작
 app.listen(config.PORT, () => {
   console.log(
     `[${config.NODE_ENV}] Server running at http://localhost:${config.PORT}`,

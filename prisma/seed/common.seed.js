@@ -1,7 +1,3 @@
-// .env 파일 DATABASE_URL 설정 필요
-// 테이블 동기화: npm run prisma:migrate
-// 시드 데이터 생성: npm run seed (기존 데이터는 삭제됩니다.)
-
 import { PrismaClient } from '#generated/prisma/client.ts';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { fakerKO as faker } from '@faker-js/faker';
@@ -15,9 +11,9 @@ import {
 const NUM_STUDIES_TO_CREATE = 34;
 
 async function main(prisma) {
-  // if (process.env.NODE_ENV !== 'development') {
-  //   throw new Error('⚠️  프로덕션 환경에서는 시딩을 실행하지 않습니다');
-  // }
+  if (process.env.NODE_ENV !== 'development') {
+    throw new Error('⚠️  프로덕션 환경에서는 시딩을 실행하지 않습니다');
+  }
 
   if (
     process.env.NODE_ENV === 'production' &&
@@ -35,7 +31,7 @@ async function main(prisma) {
   const studies = [];
 
   for (let i = 0; i < NUM_STUDIES_TO_CREATE; i++) {
-    // for문 수정
+    // TODO: for문 수정
     const study = await makeStudy();
     study.habits = makeHabitsForStudy(study.id);
     study.emojis = makeEmojisForStudy(study.id);
@@ -85,7 +81,6 @@ async function main(prisma) {
   );
 }
 
-// Prisma Client 설정
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL,
 });

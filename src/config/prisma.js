@@ -1,5 +1,3 @@
-// Adapter 패턴을 이용한 DB 연결
-
 import { PrismaClient } from '#generated/prisma/client.ts';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { config } from '#config';

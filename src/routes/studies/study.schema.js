@@ -46,7 +46,6 @@ export const createStudySchema = z.object({
     .regex(REGEX.NO_SPACE, STUDY_ERROR_MESSAGES.PASSWORD_NO_SPACE),
 });
 
-// 이모지
 export const createEmojiSchema = z.object({
   type: z
     .string({ required_error: EMOJI_ERROR_MESSAGES.EMOJI_FORMAT_INVALID })
@@ -61,16 +60,14 @@ export const createEmojiSchema = z.object({
     ),
 });
 
-//검증 + @
 export const verifyPasswordSchema = z.object({
-  password: createStudySchema.shape.password, // 기존 비번 규칙 그대로 재사용
+  password: createStudySchema.shape.password,
 });
 
 export const deleteStudySchema = z.object({
   password: createStudySchema.shape.password,
 });
 
-// 수정 + 비밀번호 포함 스키마
 export const updateStudyWithPasswordSchema = z.object({
   password: createStudySchema.shape.password,
 

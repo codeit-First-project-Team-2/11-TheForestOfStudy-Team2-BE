@@ -10,7 +10,7 @@ export const HABIT_COUNT = {
 
 export const EMOJI_COUNT = {
   MIN: 1,
-  MAX: 20,
+  MAX: 5,
 };
 
 export const TOTAL_POINT_LIMIT = {
@@ -53,7 +53,6 @@ export const INTRO_TEMPLATES = [
 ];
 
 export const EMOJI_TYPES = [
-  // 응원
   '🔥',
   '💪',
   '👏',
@@ -65,20 +64,17 @@ export const EMOJI_TYPES = [
   '🌱',
   '⭐️',
 
-  // 공부, 기록
   '📚',
   '✏️',
   '📝',
   '📖',
   '💻',
 
-  // 성취, 완료
   '✅',
   '☑️',
   '🏆',
   '🥇',
 
-  // 감정
   '😊',
   '😄',
   '😆',
