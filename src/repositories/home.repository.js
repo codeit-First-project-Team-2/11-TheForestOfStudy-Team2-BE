@@ -3,18 +3,16 @@ import { prisma } from '#config/prisma.js';
 function getStudyLists({ where, orderBy, skip, take }) {
   return Promise.all([
     prisma.study.findMany({
-      where,
-      orderBy,
-      skip,
-      take,
+      where: where || {}, // where가 undefined면 빈 객체
+      orderBy: orderBy || { createdAt: 'desc' },
+      skip: typeof skip === 'number' ? skip : 0, // undefined면 0
+      take: typeof take === 'number' ? take : 10, // undefined면 10개 기본
       include: {
-        emojis: true, // 1. 여기서 이모지 모양(type)을 가져오고
-        _count: {
-          select: { emojis: true }, // 2. 여기서 이모지 전체 개수를 가져옵니다.
-        },
+        emojis: true,
+        _count: { select: { emojis: true } },
       },
     }),
-    prisma.study.count({ where }),
+    prisma.study.count({ where: where || {} }),
   ]);
 }
 
