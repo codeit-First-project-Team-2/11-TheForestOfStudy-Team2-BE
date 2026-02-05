@@ -7,7 +7,7 @@ export const STUDY_LIMITS = {
     MAX_LENGTH: 6,
   },
   INTRODUCTION: {
-    MAX_LENGTH: 100,
+    MAX_LENGTH: 150,
   },
   PASSWORD: {
     MIN_LENGTH: 4,
