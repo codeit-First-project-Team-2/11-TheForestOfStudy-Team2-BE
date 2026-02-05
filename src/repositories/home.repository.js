@@ -3,10 +3,10 @@ import { prisma } from '#config/prisma.js';
 function getStudyLists({ where, orderBy, skip, take }) {
   return Promise.all([
     prisma.study.findMany({
-      where: where || {}, // where가 undefined면 빈 객체
+      where: where || {},
       orderBy: orderBy || { createdAt: 'desc' },
-      skip: typeof skip === 'number' ? skip : 0, // undefined면 0
-      take: typeof take === 'number' ? take : 10, // undefined면 10개 기본
+      skip: Number.isInteger(skip) ? skip : 0, // NaN 방지
+      take: Number.isInteger(take) ? take : 10, // 기본 10개
       include: {
         emojis: true,
         _count: { select: { emojis: true } },
