@@ -15,7 +15,7 @@ import { STUDY_LIMITS } from '#constants';
 
 export const xs = (n) => Array.from({ length: n }, (_, i) => i + 1);
 
-const slice = (str, max) => str.slice(0, max);
+// const slice = (str, max) => str.slice(0, max);
 
 export const randomDateString = () =>
   faker.date
@@ -132,7 +132,6 @@ export const makeEmojisForStudy = (studyId) => {
   }));
 };
 
-// 트랜잭션으로 기존 데이터 삭제
 export const resetDb = (prisma) =>
   prisma.$transaction([
     prisma.habit.deleteMany(),
