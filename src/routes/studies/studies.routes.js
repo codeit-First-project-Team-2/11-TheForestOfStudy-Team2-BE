@@ -23,7 +23,7 @@ studyRouter.use('/:studyId', focusRouter);
 studyRouter.get('/', async (req, res, next) => {
   try {
     const studies = await studiesRepository.findAllStudies();
-    
+
     const { password: _, ...rest } = studies;
 
     res.status(HTTP_STATUS.OK).json(rest);
@@ -180,26 +180,27 @@ studyRouter.post(
 studyRouter.patch(
   '/:studyId',
   validate('params', studyIdParamSchema),
-  validate('body', updateStudyWithPasswordSchema),
+  // validate('body', updateStudyWithPasswordSchema),
   async (req, res, next) => {
     try {
       const { studyId: id } = req.params;
-      const { nickname, title, introduction, background, password } = req.body;
+      // const { nickname, title, introduction, background, password } = req.body;
+      const { nickname, title, introduction, background } = req.body;
 
       const existStudy = await studiesRepository.findStudyById(id);
 
       if (!existStudy) {
         throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
       }
-      const isPasswordValid = await comparePassword(
-        password,
-        existStudy.password,
-      );
-      if (!isPasswordValid) {
-        throw new UnauthorizedException(
-          STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
-        );
-      }
+      // const isPasswordValid = await comparePassword(
+      //   password,
+      //   existStudy.password,
+      // );
+      // if (!isPasswordValid) {
+      //   throw new UnauthorizedException(
+      //     STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
+      //   );
+      // }
 
       const updatedStudy = await studiesRepository.updateStudy(id, {
         nickname,
