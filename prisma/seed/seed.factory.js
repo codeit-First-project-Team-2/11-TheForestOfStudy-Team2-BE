@@ -15,8 +15,6 @@ import { STUDY_LIMITS } from '#constants';
 
 export const xs = (n) => Array.from({ length: n }, (_, i) => i + 1);
 
-// const slice = (str, max) => str.slice(0, max);
-
 export const randomDateString = () =>
   faker.date
     .between({
@@ -53,10 +51,10 @@ export const makePassword = async () => {
     memorable: false,
     pattern: /[a-zA-Z0-9]/,
   });
+  console.log(raw); // 태스트를 위한 비밀번호 확인
   return hashPassword(raw);
 };
 
-// Study
 export const makeStudy = async () => {
   const studyId = faker.string.ulid();
   const title = faker.helpers.arrayElement(SUBJECTS);
@@ -79,7 +77,6 @@ export const makeStudy = async () => {
   return study;
 };
 
-// Habit
 export const makeHabitsForStudy = (studyId) => {
   const habitCount = faker.number.int({
     min: HABIT_COUNT.MIN,
@@ -98,7 +95,6 @@ export const makeHabitsForStudy = (studyId) => {
   });
 };
 
-// HabitRecord
 export const makeHabitRecordsForHabit = (habitId) => {
   const recordCount = faker.number.int({
     min: HABIT_RECORD_COUNT.MIN,
@@ -118,7 +114,6 @@ export const makeHabitRecordsForHabit = (habitId) => {
   );
 };
 
-// Emoji
 export const makeEmojisForStudy = (studyId) => {
   const emojiCount = faker.number.int({
     min: EMOJI_COUNT.MIN,
