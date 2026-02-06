@@ -36,5 +36,5 @@ export const DEVELOPMENT_ORIGINS = [
   'http://localhost:5173', // vite 기본 포트
 ];
 export const PRODUCTION_ORIGINS = [
-  'https://theforestofstudy-team2.netlify.app/',
+  'https://theforestofstudy-team2.netlify.app',
 ];
