@@ -1,21 +1,14 @@
 import express from 'express';
-import { comparePassword } from '#utils/password.utils.js';
 import {
   HTTP_STATUS,
-  STUDY_ERROR_MESSAGES,
   DEFAULT_SETTING_MINUTES,
   DEFAULT_GETTING_POINTS,
 } from '#constants';
-import {
-  NotFoundException,
-  UnauthorizedException,
-  BadRequestException,
-} from '#exceptions';
+import { BadRequestException } from '#exceptions';
 import focusRepository from '#repositories/focus.repository.js';
 
 const focusRouter = express.Router({ mergeParams: true });
 
-// 담당: 김민성
 // focusRouter.post('/password/verify', async (req, res, next) => {
 //   const { studyId } = req.params;
 //   const { password: inputPassword } = req.body;
@@ -48,8 +41,7 @@ const focusRouter = express.Router({ mergeParams: true });
 //   }
 // });
 
-// 담당: 김민성
-focusRouter.post('/focus', async (req, res, next) => {
+focusRouter.post('/:studyId/focus', async (req, res, next) => {
   const { studyId } = req.params;
   const { actualMinutes } = req.body;
 
@@ -66,12 +58,12 @@ focusRouter.post('/focus', async (req, res, next) => {
     const updatedStudy = await focusRepository.updateStudyPoints(
       studyId,
       earnedPoint,
-    ); //repository 사용
+    );
 
     return res.status(HTTP_STATUS.OK).json({
       success: true,
       message: `${earnedPoint}가 적립되었습니다.`,
-      data: { totalPoint: updatedStudy.totalPoint },
+      data: { totalPoint: updatedStudy.totalPoint, earnedPoint: earnedPoint },
     });
   } catch (error) {
     next(error);
