@@ -169,7 +169,6 @@ studyRouter.patch(
   async (req, res, next) => {
     try {
       const { studyId: id } = req.params;
-      // const { nickname, title, introduction, background, password } = req.body;
       const { nickname, title, introduction, background } = req.body;
 
       const existStudy = await studiesRepository.findStudyById(id);

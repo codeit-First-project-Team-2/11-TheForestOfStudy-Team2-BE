@@ -1,4 +1,3 @@
-// HTTP 상태 코드 상수
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,

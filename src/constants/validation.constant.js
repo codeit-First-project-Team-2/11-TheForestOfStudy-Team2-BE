@@ -1,4 +1,3 @@
-// Study
 export const STUDY_LIMITS = {
   NICKNAME: {
     MAX_LENGTH: 4,
@@ -15,7 +14,6 @@ export const STUDY_LIMITS = {
   },
 };
 
-// Habit
 export const HABIT_LIMITS = {
   NAME: {
     MIN_LENGTH: 1,
@@ -23,7 +21,6 @@ export const HABIT_LIMITS = {
   },
 };
 
-// Emoji
 export const EMOJI_LIMITS = {
   TYPE: {
     MIN_LENGTH: 1,

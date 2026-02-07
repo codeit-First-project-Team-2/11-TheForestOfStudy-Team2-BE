@@ -9,38 +9,6 @@ import focusRepository from '#repositories/focus.repository.js';
 
 const focusRouter = express.Router({ mergeParams: true });
 
-// focusRouter.post('/password/verify', async (req, res, next) => {
-//   const { studyId } = req.params;
-//   const { password: inputPassword } = req.body;
-
-//   try {
-//     const study = await focusRepository.findStudyId(studyId); //repository 사용
-//     const isValidPassword = comparePassword(inputPassword, study.password); //util 사용
-
-//     if (!study) {
-//       throw new NotFoundException(STUDY_ERROR_MESSAGES.STUDY_NOT_FOUND);
-//     }
-
-//     if (!isValidPassword) {
-//       throw new UnauthorizedException(
-//         STUDY_ERROR_MESSAGES.PASSWORD_CONFIRM_MISMATCH,
-//       );
-//     }
-
-//     return res.status(HTTP_STATUS.OK).json({
-//       success: true,
-//       message: '인증 성공',
-//       data: {
-//         nickname: study.nickname,
-//         title: study.title,
-//         totalPoint: study.totalPoint,
-//       },
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// });
-
 focusRouter.post('/:studyId/focus', async (req, res, next) => {
   const { studyId } = req.params;
   const { actualMinutes } = req.body;

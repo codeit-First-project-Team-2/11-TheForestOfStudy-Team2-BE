@@ -51,7 +51,6 @@ export const makePassword = async () => {
     memorable: false,
     pattern: /[a-zA-Z0-9]/,
   });
-  console.log(raw); // 태스트를 위한 비밀번호 확인
   return hashPassword(raw);
 };
 

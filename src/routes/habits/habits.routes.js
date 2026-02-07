@@ -154,10 +154,10 @@ habitRouter.patch(
     }
   },
 );
+
 // 습관 종료  DELETE /api/habits/:habitId (soft delete)
 habitRouter.delete(
   '/:habitId',
-  // validate('params', habitIdParamSchema),
   async (req, res, next) => {
     try {
       const { habitId } = req.params;
